@@ -248,7 +248,7 @@ async function stringIncludes(ref, refList) {
   return [false, -1];
 }
 
-async function get_metrics(user_input, snippet_title, snippet_content, snippet_urls, embedings_model,debug = false) {
+async function get_metrics(user_input, snippet_title, snippet_content, snippet_urls, snippet_scores = [], embedings_model,debug = false) {
   const result_metrics = {}
   try {
     snippet_urls = snippet_urls.map(url => decodeURIComponent(url))
@@ -261,7 +261,8 @@ async function get_metrics(user_input, snippet_title, snippet_content, snippet_u
   result_metrics['title_status'] = title_status
   if (!debug){
     result_metrics['actual_title'] = snippet_title[0];
-    result_metrics['actual_url'] = snippet_urls[0]
+    result_metrics['actual_url'] = snippet_urls[0];
+    result_metrics['actual_score'] = snippet_scores[0];
   }
   const direct_content_score = await directStringComparison(user_input.Expected_Ans, snippet_content);
   result_metrics['Chunk_number_direct_content_score'] = direct_content_score[1]
@@ -346,6 +347,7 @@ async function pre_processing(search_call, user_input, embedings_model) {
     let snippet_title = [];
     let snippet_content = [];
     let snippet_urls = [];
+    let snippet_scores = [];
     let snippet_type = "";
     if(Object.keys(payload_response).length){
       snippet_type =
@@ -363,6 +365,7 @@ async function pre_processing(search_call, user_input, embedings_model) {
         snippet_title.push(input_data.snippet_title);
         snippet_content.push(snippet_content_as_string);
         snippet_urls.push(input_data.url);
+        snippet_scores.push(input_data.score);
   
       } else {
         input_data =
@@ -371,6 +374,7 @@ async function pre_processing(search_call, user_input, embedings_model) {
           snippet_content.push(input_data[i]["answer_fragment"]);
           snippet_title.push(input_data[i]["sources"][0]["title"]);
           snippet_urls.push(input_data[i]["sources"][0]["url"]);
+          snippet_scores.push("NA")
         }
       }
   
@@ -378,7 +382,7 @@ async function pre_processing(search_call, user_input, embedings_model) {
   
 
     // model performance
-    let result_metrics = await get_metrics(user_input, snippet_title, snippet_content, snippet_urls, embedings_model);
+    let result_metrics = await get_metrics(user_input, snippet_title, snippet_content, snippet_urls, snippet_scores,embedings_model);
     result_metrics["Model_used"] = snippet_type
     // console.log(result_metrics)
 
@@ -386,6 +390,7 @@ async function pre_processing(search_call, user_input, embedings_model) {
     let debugger_input_data = {}
     let debugger_chunk_content = []
     let debugger_chunk_url = []
+    let debugger_chunk_score = []
     let debugger_chuck_title = []
     let debugger_result_metrics
 
@@ -401,6 +406,7 @@ async function pre_processing(search_call, user_input, embedings_model) {
       for (let i = 0; i < debugger_input_data.length; i++) {
         debugger_chunk_content.push(debugger_input_data[i]["chunk_text"]);
         debugger_chunk_url.push(debugger_input_data[i]["source_url"]);
+        debugger_chunk_score.push(debugger_input_data[i]["score"])
         chunk_more_info = debugger_input_data[i]['more_info']
         let chunk_title = debugger_input_data[i]["source_name"]
         if (chunk_more_info) {
@@ -417,7 +423,7 @@ async function pre_processing(search_call, user_input, embedings_model) {
       // console.log(debugger_chunk_url)
       // console.log(debugger_chuck_title)
 
-      debugger_result_metrics = await get_metrics(user_input, debugger_chuck_title, debugger_chunk_content, debugger_chunk_url, embedings_model,true)
+      debugger_result_metrics = await get_metrics(user_input, debugger_chuck_title, debugger_chunk_content, debugger_chunk_url,debugger_chunk_score, embedings_model,true)
       debugger_result_metrics['debug_payload'] = debugger_input_data
       // console.log(debugger_result_metrics)
     }
@@ -480,6 +486,7 @@ async function get_results(CSV_file_path) {
       appending_objects["Answer_Snippet"] = final_results.result_metrics.data_index
       appending_objects["Actual_Title"] = final_results.result_metrics.actual_title
       appending_objects["Actual_URL"] = final_results.result_metrics.actual_url
+      appending_objects["Actual_Score"] = final_results.result_metrics.actual_score
       appending_objects["Answer_Status"] = final_results.result_metrics.Ans_Status
       appending_objects["URL_status"] = Boolean(final_results.result_metrics.url_status)
       appending_objects["Title_Status"] = Boolean(final_results.result_metrics.title_status)
