@@ -35,7 +35,7 @@ To generate embeddings, send a POST request to the /generate_embeddings endpoint
 ### Example payload:
 
 json
-Copy code
+
 {
     "sentences": ["Sentence 1", "Sentence 2"],
     "model_name": "e5Base"
@@ -44,6 +44,17 @@ Replace "e5Base" with the name of the model you want to use.
 
 The application will return JSON response containing the embeddings for the provided sentences.
 
+### Example Output
 
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+{
+    "embeddings": [
+        0.004253577906638384,
+        0.0143563412129879,
+        -0.01487610675394535,
+        0.08480880409479141,
+        0.02371254935860634,
+        -0.014803698286414146,
+        -0.0041594249196350574,
+        ...
+    ]
+}
