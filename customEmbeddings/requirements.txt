@@ -1,0 +1,6 @@
+Flask==2.0.2
+tornado==6.1
+transformers==4.39.2
+sentence-transformers==2.6.1
+nltk==3.8.1
+openai==1.2.4
