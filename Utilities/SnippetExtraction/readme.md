@@ -34,7 +34,7 @@
 
 ***Step 1:** **Clone Findly Repo from GitHub :** 
    * Find the repository here: <br />
-     `git@github.com:surendra-koreai/SearchAssist-Public-Utilities.git` <br /> 
+     `git@github.com:Koredotcom/SearchAssist-Toolkit.git` <br /> 
 
 * **Step 2:** **Activate virtual environment:** Execute the following command with required changes in it to activate the virtual environment 
        <br> `source virtual_environments_folder_location/virtualenv_name/bin/activate`<br>
