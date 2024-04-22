@@ -10,6 +10,13 @@
                 "role": "user",
                 "content": "From the content that I have provided, solve the query : ' {{query}} ' 'EXCLUDE ANY irrelevant information, such as 'Note:' from the response. NEVER FABRICATE ANY CHUNK_ID."
             }
-        ]
-    }
+        ],
+        "MODEL": "gpt-3.5-turbo",
+        "TEMPERATURE": 0.5,
+        "MAX_TOKENS": 512,
+        "TOP_P": 1,
+        "FREQUENCY_PENALTY": 0,
+        "PRESENCE_PENALTY": 0
+    },
+    "ANSWERING_LLM": "openai"
 }

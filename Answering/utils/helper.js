@@ -1,7 +1,6 @@
 const regexPattern = /chk-[a-zA-Z0-9-]+/g;
 
 async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
-    console.log("frameAnswerFromChunks()::chunkIdMap ===>", chunkIdMap);
     let answerText = openaiAns;
     let answerTextTemp = answerText;
     let citationType = '',
@@ -21,7 +20,6 @@ async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
             }
         }
     }
-    console.log("chunkIds =====>", chunkIds);
     for (let chunk_index = 0; chunk_index < chunkIds.length; chunk_index++) {
         let source = chunkIds[chunk_index];
         let answerFragmentDict = {},
@@ -61,7 +59,6 @@ async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
             }
         }
         answerFragmentDict['sources'] = answerSources;
-        console.log("answerFragmentDict ====>", answerFragmentDict);
         answerFragments.push(answerFragmentDict);
     }
     answer = answerFragments;
@@ -118,8 +115,7 @@ async function formChunkIdMap(chunksSentToLLM) {
     // }
     for (let result_index = 0; result_index < searchResults.length; result_index++) {
         let result = searchResults[result_index];
-        const chunk_id = result['chunkId'] || result['_source.chunkId']; //test this;
-        // console.log("chunk_id ======>", chunk_id);
+        const chunk_id = result['chunkId'] || result['_source.chunkId'];
         chunkIdMap[chunk_id] = result;
         chunkIdMap[chunk_id]['score'] = result['_score'] ? result['_score'] : result['vector_score'];
         chunkIdMap[chunk_id]['sent_to_LLM'] = false;
@@ -143,7 +139,7 @@ async function getContextArrayChunks(prompt, chunksSentToLLM) {
         data: [{
             title: "",
             answer: "",
-            snippet_type: "generative_model" // define constants for this
+            snippet_type: "generative_model"
         }]
     };
 
@@ -151,7 +147,6 @@ async function getContextArrayChunks(prompt, chunksSentToLLM) {
     const chunkIdMap = {};
     const promptContent = [];
     let checkText = "";
-    // const chunksSentToLLM = kwargs.chunk_result ?.generative || [];
 
     for (let index = 0; index < chunksSentToLLM.length; index++) {
         const chunkIndex = `chk-${index + 1}`;
@@ -166,8 +161,8 @@ async function getContextArrayChunks(prompt, chunksSentToLLM) {
         };
     }
 
-    const promptType = 'citation_snippet'; // define constants for this
-    const promptLength = await numTokensFromString('');// earlier code was const promptLength = numTokensFromString(prompt);
+    const promptType = 'citation_snippet';
+    const promptLength = await numTokensFromString('');
     const maxTokenSize = 3000;
     const numberOfChunks = 5;
     let prevChunkScore = 0.0;
@@ -230,8 +225,6 @@ async function modifyPrompt(prompt, query, chunksSentToLLM) {
         return modifiedPrompt;
     } catch (error) {
         console.error(error);
-        // If there's an error, log it and return the original prompt
-        // return JSON.parse(prompt);
         return prompt;
     }
 }
