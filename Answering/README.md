@@ -1,6 +1,6 @@
 # Node.js Public Utility API
 
-This Node.js project provides a simple API for public utility tasks and includes functionality to interact with the OpenAI API for answering queries.
+This Node.js public utility provides the capability to interact with any custom LLM for answering of your choice. Here we are integrating OpenAI for answering.
 
 ## Project Structure
 
@@ -22,8 +22,9 @@ This Node.js project provides a simple API for public utility tasks and includes
 
 ### 1. Clone the Repository
 
-git clone <repository_url>
-cd <project_folder>
+git clone [here](git@github.com:Koredotcom/SearchAssist-Toolkit.git)
+
+cd Answering
 
 ### 2. Install Dependencies
 
@@ -32,7 +33,7 @@ npm install
 ### 3. Run the Server
 node server.js
 
-The server will be running on http://localhost:3000.
+The server will be running on [here](http://localhost:3000).
 
 ## API Endpoints
 
