@@ -226,7 +226,8 @@ Sample configuration which can be edited depending on the use case
 
 ### Answer Endpoint:
 
-```curl --location --request POST 'http://searchassist-dev.kore.ai:3000/searchassistapi/answer' \
+```
+curl --location --request POST 'http://searchassist-dev.kore.ai:3000/searchassistapi/answer' \
 --header 'Content-Type: application/json;charset=UTF-8' \
 --header 'api-token: df38c7b8-8e1b-4d27-9a4a-1d9f88d927f2' \
 --data-raw '{
