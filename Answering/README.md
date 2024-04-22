@@ -22,7 +22,7 @@ This Node.js public utility provides the capability to interact with any custom 
 
 ### 1. Clone the Repository
 
-git clone [here](git@github.com:Koredotcom/SearchAssist-Toolkit.git)
+git clone git@github.com:Koredotcom/SearchAssist-Toolkit.git
 
 cd Answering
 
@@ -33,7 +33,7 @@ npm install
 ### 3. Run the Server
 node server.js
 
-The server will be running on [here](http://localhost:3000).
+The server will be running on http://localhost:3000.
 
 ## API Endpoints
 
