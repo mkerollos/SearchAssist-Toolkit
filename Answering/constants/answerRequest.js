@@ -507,5 +507,5 @@ module.exports = {
         }
     },
     clientAuthToken: "df38c7b8-8e1b-4d27-9a4a-1d9f88d927f2",
-    REQUEST_TIMEOUT: 10000
+    REQUEST_TIMEOUT: 30000
 };

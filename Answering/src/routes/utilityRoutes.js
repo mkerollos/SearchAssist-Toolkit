@@ -4,6 +4,18 @@ const utilityController = require('../controllers/utilityController');
 const { predefinedRequestData, clientAuthToken, REQUEST_TIMEOUT } = require('../../constants/answerRequest');
 const base = require('../../base');
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
+const bodyParser = require('body-parser');
+
+router.use(bodyParser.json());
+
+// Read the client certificate file
+const clientCertPath = '/data/certs/mutualssl/cert.pem';
+const clientCertBuffer = fs.readFileSync(clientCertPath);
+
+// Use the buffer as expectedCert
+const expectedCert = clientCertBuffer;
 
 const authenticateToken = (req, res, next) => {
   const authToken = req.headers['api-token'];
@@ -14,7 +26,23 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-router.post('/answer', authenticateToken, async (req, res) => {
+// Middleware to verify the client certificate
+const verifyClientCert = (req, res, next) => {
+  // Verify the client certificate
+  const clientCert = req.socket.getPeerCertificate();
+  // Check if the client certificate is provided and valid
+  if (!clientCert || Object.keys(clientCert).length === 0) {
+    return res.status(403).json({ error: 'Unauthorized: Client certificate not provided or invalid.' });
+  }
+  // Compare the client certificate against the expected certificate
+  if (clientCert.raw.toString('base64') !== expectedCert.toString('base64')) {
+    return res.status(403).json({ error: 'Unauthorized: Invalid client certificate.' });
+  }
+  next();
+};
+
+// router.post('/answer', authenticateToken, verifyClientCert, async (req, res) => {
+  router.post('/answer', authenticateToken, async (req, res) => {
   try {
     console.log("<========== Public Answering Service Request is received ==========>");
     const userQuery = req.body?.searchResults?.template?.spellCorrectedQuery || req.body?.searchResults?.template?.originalQuery || predefinedRequestData.answer_hook_user_input.spellCorrectedQuery;
