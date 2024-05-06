@@ -229,9 +229,52 @@ async function modifyPrompt(prompt, query, chunksSentToLLM) {
     }
 }
 
+function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, openaiResponse) {
+    let { MODEL, TEMPERATURE, TOP_P, FREQUENCY_PENALTY } = answerConfigs;
+    const debug_payload_info = {
+        prompt: {
+            promptText: prompt,
+            moreInfo: [
+                { "key": "Model", "value": MODEL },
+                { "key": "Temperature", "value": TEMPERATURE },
+                { "key": "Frequency Penalty", "value": FREQUENCY_PENALTY },
+                { "key": "TopP", "value": TOP_P }
+            ]
+        },
+        llmResponse: {
+            responseDetails: {
+                completionText: { answer: null, chunkIds: [] },
+                moreInfo: []
+            },
+            responseTime: { moreInfo: [] }
+        }
+    };
+
+    const populateMoreInfo = (key, value) => {
+        debug_payload_info.llmResponse.responseDetails.moreInfo.push({ key, value });
+    };
+
+    debug_payload_info.llmResponse.responseTime.moreInfo.push({ "Completion time": completion_time });
+    debug_payload_info.llmResponse.responseDetails.completionText.answer = ans;
+
+    const regexPattern = /chk-[a-zA-Z0-9-]+/g;
+    let answerText = openaiResponse;
+    if (typeof answerText !== 'string') {
+        answerText = JSON.stringify(answerText);
+    }
+    let chunkIds = answerText.match(regexPattern);
+    debug_payload_info.llmResponse.responseDetails.completionText.chunkIds = chunkIds;
+    populateMoreInfo("Completion Tokens", completion_tokens);
+    populateMoreInfo("Prompt Tokens", prompt_tokens);
+    populateMoreInfo("Total Tokens", total_tokens);
+
+    return debug_payload_info;
+}
+
 module.exports = {
     generateAnswerFromOpenaiResponse,
     formChunkIdMap,
     modifyPrompt,
-    getContextArrayChunks
+    getContextArrayChunks,
+    formAnswerDebugPayload
 };
