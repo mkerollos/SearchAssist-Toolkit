@@ -30,7 +30,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
         },
       });
       const endTime = new Date();
-      let completion_time = endTime - startTime;
+      let completion_time = (endTime - startTime) / 1000;
 
       const kwargs = await helperService.getContextArrayChunks(prompt, chunksSentToLLM);
       const chunkIdMap = kwargs.chunk_id_map;
@@ -40,7 +40,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
       const completion_tokens = more_info?.completion_tokens || 0;
       const total_tokens = more_info?.total_tokens || 0;
 
-      const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap);
+      const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap, completion_time);
       let contentList = answer[1]?.data[0]?.answer || [];
       let ans = "";
       contentList.forEach((content) => {
@@ -50,7 +50,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
       debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data);
 
       resp = {
-        graph_answer: { "payload": { "center_panel": answer[1] } },
+        graph_answer: { "payload": [{ "center_panel": [answer[1]] }] },
         debug_payload: debug_payload_info
       };
 
@@ -78,7 +78,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
         },
       });
       const endTime = new Date();
-      let completion_time = endTime - startTime;
+      let completion_time = (endTime - startTime) / 1000;
 
       const kwargs = await helperService.getContextArrayChunks(prompt, chunksSentToLLM);
       const chunkIdMap = kwargs.chunk_id_map;
@@ -88,7 +88,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
       const completion_tokens = more_info?.completion_tokens || 0;
       const total_tokens = more_info?.total_tokens || 0;
 
-      const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap);
+      const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap, completion_time);
 
       let contentList = answer[1]?.data[0]?.answer || [];
       let ans = "";
@@ -98,7 +98,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
 
       debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data);
       resp = {
-        graph_answer: { "payload": { "center_panel": answer[1] } },
+        graph_answer: { "payload": [{ "center_panel": [answer[1]] }] },
         debug_payload: debug_payload_info
       };
     }
