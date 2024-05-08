@@ -41,7 +41,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
       const total_tokens = more_info?.total_tokens || 0;
 
       const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap, completion_time);
-      let contentList = answer[1]?.data[0]?.answer || [];
+      let contentList = answer[1]?.data[0]?.snippet_content || [];
       let ans = "";
       contentList.forEach((content) => {
         ans += content?.answer_fragment;
@@ -90,7 +90,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
 
       const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap, completion_time);
 
-      let contentList = answer[1]?.data[0]?.answer || [];
+      let contentList = answer[1]?.data[0]?.snippet_content || [];
       let ans = "";
       contentList.forEach((content) => {
         ans += content?.answer_fragment;

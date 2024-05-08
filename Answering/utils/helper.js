@@ -72,7 +72,7 @@ async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
     return [answer, imageUrl, chunkData, citationType];
 }
 
-async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap) {
+async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, completion_time) {
     const llmAnswer = {
         'type': 'answer_snippet',
         'data': [{
@@ -93,9 +93,14 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap) {
             let imageUrl = response[1];
             let citationType = response[3];
             llmAnswer['type'] = citationType;
+            llmAnswer['data'][0]["isPresentedAnswer"] = true;
+            llmAnswer['data'][0]["message"] = "Presented Answer";
+            llmAnswer['data'][0]["score"] = "0%";
+            llmAnswer['data'][0]["timeTaken"] = `${completion_time}ms`;
+
             let result_data = llmAnswer['data'][0];
             result_data['title'] = "";
-            result_data['answer'] = answer;
+            result_data['snippet_content'] = answer;
             if (imageUrl) {
                 result_data['image_url'] = imageUrl;
             }
@@ -253,8 +258,7 @@ function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_t
     const populateMoreInfo = (key, value) => {
         debug_payload_info.llmResponse.responseDetails.moreInfo.push({ key, value });
     };
-
-    debug_payload_info.llmResponse.responseTime.moreInfo.push({ "Completion time": completion_time });
+    debug_payload_info.llmResponse.responseTime.moreInfo.push({ key: 'Completion Time', value: completion_time});
     debug_payload_info.llmResponse.responseDetails.completionText.answer = ans;
 
     const regexPattern = /chk-[a-zA-Z0-9-]+/g;
