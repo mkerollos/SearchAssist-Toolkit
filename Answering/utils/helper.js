@@ -85,6 +85,7 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, comp
     let answerFound = false;
     if (openaiAnswer && openaiAnswer.length > 0) {
         let answerSplitObj = openaiAnswer[0]['message']['content'];
+        llmAnswer['data'][0]['answer'] = answerSplitObj;
         let chunkIdsList = answerSplitObj.match(regexPattern);
 
         if (chunkIdsList) {
@@ -101,6 +102,11 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, comp
             let result_data = llmAnswer['data'][0];
             result_data['title'] = "";
             result_data['snippet_content'] = answer;
+            let ans = "";
+            result_data['snippet_content'].forEach((content) => {
+                ans += content?.answer_fragment;
+            });
+            llmAnswer['data'][0]['answer'] = ans;
             if (imageUrl) {
                 result_data['image_url'] = imageUrl;
             }
@@ -234,13 +240,14 @@ async function modifyPrompt(prompt, query, chunksSentToLLM) {
     }
 }
 
-function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, openaiResponse) {
+function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, openaiResponse, answeringType) {
     let { MODEL, TEMPERATURE, TOP_P, FREQUENCY_PENALTY } = answerConfigs;
+    let MODEL_NAME = answeringType + ' ' + MODEL;
     const debug_payload_info = {
         prompt: {
             promptText: prompt,
             moreInfo: [
-                { "key": "Model", "value": MODEL },
+                { "key": "Model", "value": MODEL_NAME },
                 { "key": "Temperature", "value": TEMPERATURE },
                 { "key": "Frequency Penalty", "value": FREQUENCY_PENALTY },
                 { "key": "TopP", "value": TOP_P }

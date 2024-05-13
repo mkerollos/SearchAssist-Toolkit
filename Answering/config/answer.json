@@ -1,5 +1,6 @@
 {
-    "ANSWERING_LLM": "azure_openaai",
+    "ANSWERING_LLM": "azure_openai",
+    "ANSWERING_TYPE": "Custom Integration",
     "openai": {
         "endpoint": "https://api.openai.com/v1/chat/completions",
         "apiKey": "REMOVED",

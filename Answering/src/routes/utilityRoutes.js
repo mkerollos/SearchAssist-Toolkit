@@ -42,7 +42,7 @@ const verifyClientCert = (req, res, next) => {
 };
 
 // router.post('/answer', authenticateToken, verifyClientCert, async (req, res) => {
-  router.post('/answer', authenticateToken, async (req, res) => {
+  router.post('/', authenticateToken, async (req, res) => {
   try {
     console.log("<========== Public Answering Service Request is received ==========>");
     const userQuery = req.body?.searchResults?.template?.spellCorrectedQuery || req.body?.searchResults?.template?.originalQuery || predefinedRequestData.answer_hook_user_input.spellCorrectedQuery;
