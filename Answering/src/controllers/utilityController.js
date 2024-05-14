@@ -51,7 +51,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
       debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data, answeringType);
 
       resp = {
-        graph_answer: { "payload": [{ "center_panel": [answer[1]] }] },
+        graph_answer: { "payload": { "center_panel": answer[1] } },
         debug_payload: debug_payload_info
       };
 
@@ -99,7 +99,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
 
       debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data, answeringType);
       resp = {
-        graph_answer: { "payload": [{ "center_panel": [answer[1]] }] },
+        graph_answer: { "payload": { "center_panel": answer[1] } },
         debug_payload: debug_payload_info
       };
     }
