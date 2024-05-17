@@ -22,26 +22,38 @@ This Node.js public utility provides the capability to interact with any custom 
 
 ### 1. Clone the Repository
 
+```
 git clone git@github.com:Koredotcom/SearchAssist-Toolkit.git
+```
+
+```
 cd SearchAssist-Toolkit/
+```
+
+```
 cd Answering
+```
 
-### 2. Install Dependencies (Optional, Not needed)
+### 2. Install Dependencies (Optional)
 
+```
 npm install
+```
 
 ### 3. Run the Server
+```
 node server.js
+```
 
 In your local machine the server will be running on {{protocol}}://{{host}}:{{port}}. 
 
-If you this message on running the service proceed: Server is running on http://localhost:8888
+If you this message on running the service proceed: ```Server is running on http://localhost:8888```
 
 ## API Endpoints
 
 ### Answer Endpoint
-**API Path**: {{host}}/searchassistAnswering
-**Method**: POST
+**API Path**: ```{{host}}/searchassistAnswering```
+**Method**: ```POST```
 
 ## Sample Request Payload:
 
@@ -111,6 +123,124 @@ If you this message on running the service proceed: Server is running on http://
     }
 }
 ```
+## Sample Response Payload:
+```
+{
+    "answer": {
+        "graph_answer": {
+            "payload": {
+                "center_panel": {
+                    "type": "citation_snippet",
+                    "data": [
+                        {
+                            "title": "",
+                            "answer": "To develop a successful real estate marketing strategy, it is essential to work smarter when generating leads, not harder. One way to do this is by using PropStream, which allows you to effortlessly find listing leads by searching for local homeowners with selling motivation. Examples of selling motivation you can search using PropStream are: - Divorce - Pre-foreclosure - Bankruptcy - Pre-probate And more!  Additionally, finding someone to hold you accountable and remind you of your goals can be a helpful strategy. This could be as simple as an occasional text asking how your marketing is going this week or as formal as a one-on-one meeting with a business coach. ",
+                            "snippet_type": "generative_model",
+                            "isPresentedAnswer": true,
+                            "message": "Presented Answer",
+                            "score": "0%",
+                            "timeTaken": "4.417ms",
+                            "snippet_content": [
+                                {
+                                    "answer_fragment": "To develop a successful real estate marketing strategy, it is essential to work smarter when generating leads, not harder. One way to do this is by using PropStream, which allows you to effortlessly find listing leads by searching for local homeowners with selling motivation. Examples of selling motivation you can search using PropStream are: - Divorce - Pre-foreclosure - Bankruptcy - Pre-probate And more! ",
+                                    "sources": [
+                                        {
+                                            "title": "Can You Be a Real Estate Agent Part-Time? (+ Tipsu0021)",
+                                            "url": "https://www.propstream.com/",
+                                            "chunk_id": "chk-2",
+                                            "doc_id": "fc-832b712a-df4e-4cab-a989-564991054ac5",
+                                            "source_id": "fs-992880ef-1f84-5d02-8ac1-8004e64affab",
+                                            "source_type": "web"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "answer_fragment": " Additionally, finding someone to hold you accountable and remind you of your goals can be a helpful strategy. This could be as simple as an occasional text asking how your marketing is going this week or as formal as a one-on-one meeting with a business coach. ",
+                                    "sources": [
+                                        {
+                                            "title": "Can You Be a Real Estate Agent Part-Time? (+ Tipsu0021)",
+                                            "url": "https://www.propstream.com/",
+                                            "chunk_id": "chk-1",
+                                            "doc_id": "fc-832b712a-df4e-4cab-a989-564991054ac5",
+                                            "source_id": "fs-992880ef-1f84-5d02-8ac1-8004e64affab",
+                                            "source_type": "web"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "debug_payload": {
+            "prompt": {
+                "promptText": [
+                    {
+                        "role": "system",
+                        "content": "You are an AI system responsible for generating answers and references based on user-provided context. The user will provide context, and your task is to answer the user's query at the end. Your response should adhere to the following format: **'Some relevant answer[chunk_id] Another relevant data[chunk_id]'**. In this format, you must strictly include the relevant answer or information followed by the chunk_id, which serves as a reference to the source of the data within the provided context. Importantly, place only the correct chunk_ids within square brackets. These chunk_ids must be located exclusively at the end of each content and indicated explicitly with a key 'chunk id.' Do not include any other text, words, or characters within square brackets. Your responses should also be properly formatted with all necessary special characters like new lines, tabs, and bullets, as required for clarity and presentation. If there are multiple answers present in the provided context, you should include all of them in your response. You should only provide an answer if you can extract the information directly from the content provided by the user. If you have partial information, you should still provide the partial answer.Always send relevant and correct chunk_ids with the answer fragments. You must not fabricate or create chunk_ids; they should accurately reference the source of each piece of information.If you cannot find the answer to the user's query within the provided content, your response should be 'I don't know.'.GENERATE ANSWERS AND REFERENCES EXCLUSIVELY BASED ON THE CONTENT PROVIDED BY THE USER. IF A QUERY LACKS INFORMATION IN THE CONTEXT, YOU MUST RESPOND WITH 'I don't know' WITHOUT EXCEPTIONS. Please generate the response in the same language as the user's query and context. To summarize, your task is to generate well-formatted responses, including special characters like new lines, tabs, and bullets when necessary, and to provide all relevant answers from the provided context while ensuring accuracy and correctness. Each answer fragment should be accompanied by the appropriate chunk_id, and you should never create chunk_ids. Answer in the same language as the user's query and context. Content:  moreu0021 Easily save leads to marketing lists and create your campaign in one convenient location. Want to see why agents love PropStream?, source_name: Can You Be a Real Estate Agent Part-Time? (+ Tipsu0021) chunk_id: chk-1. \nContent:  the most important tasks get done first. 6. Find someone to hold you accountable Find a mentor, friend, or fellow agent who can keep you accountable and remind you of your goals when work gets hard. This could be as simple as an occasional text asking how your marketing is going this week or as formal as a one-on-one meeting with a business coach. Pros and Cons of Being a Part-Time Real Estate Agent Not sure if going part-time is for you? Here’s a quick breakdown of the pros and cons. | | Should You Become a Part-Time Real Estate Agent? | | Pros: | | Cons: | | - Flexible schedule. You can set your hours around your other responsibilities. - Less pressure to scale quickly. You can build your client base at your own pace while relying on income from another job. - Extra cash. You can supplement your primary income with sales commissions. | | - Time commitment. It may take longer for your business to gain momentum if you’re only part-time. - Demanding clients. Some clients may expect more attention and time than you can give. - High competition. Many clients prefer to work with a full-time agent, and there are plenty to choose from. Ready to Level Up Your Marketing? If you’re pursuing a part-time real estate career, your time is even more valuable than somebody who has an unlimited amount of time to dedicate to their business. So, you need to work smarter when generating leads, not harder. This is where PropStream comes in handy. With PropStream, you can effortlessly find listing leads by searching for local homeowners with selling motivation. Examples of selling motivation you can search using PropStream are: - Divorce - Pre-foreclosure - Bankruptcy - Pre-probate And moreu0021 Easily save leads to marketing lists and create your campaign in one convenient location. Want to see why agents love PropStream?, source_name: Can You Be a Real Estate Agent Part-Time? (+ Tipsu0021) chunk_id: chk-2. "
+                    },
+                    {
+                        "role": "user",
+                        "content": "From the content that I have provided, solve the query : ' real estate marketting strategy ' 'EXCLUDE ANY irrelevant information, such as 'Note:' from the response. NEVER FABRICATE ANY CHUNK_ID."
+                    }
+                ],
+                "moreInfo": [
+                    {
+                        "key": "Model",
+                        "value": "Custom Integration gpt-3.5-turbo"
+                    },
+                    {
+                        "key": "Temperature",
+                        "value": 0.5
+                    },
+                    {
+                        "key": "Frequency Penalty",
+                        "value": 0
+                    },
+                    {
+                        "key": "TopP",
+                        "value": 1
+                    }
+                ]
+            },
+            "llmResponse": {
+                "responseDetails": {
+                    "completionText": {
+                        "answer": "To develop a successful real estate marketing strategy, it is essential to work smarter when generating leads, not harder. One way to do this is by using PropStream, which allows you to effortlessly find listing leads by searching for local homeowners with selling motivation. Examples of selling motivation you can search using PropStream are: - Divorce - Pre-foreclosure - Bankruptcy - Pre-probate And more!  Additionally, finding someone to hold you accountable and remind you of your goals can be a helpful strategy. This could be as simple as an occasional text asking how your marketing is going this week or as formal as a one-on-one meeting with a business coach. ",
+                        "chunkIds": [
+                            "chk-2",
+                            "chk-1"
+                        ]
+                    },
+                    "moreInfo": [
+                        {
+                            "key": "Completion Tokens",
+                            "value": 141
+                        },
+                        {
+                            "key": "Prompt Tokens",
+                            "value": 958
+                        },
+                        {
+                            "key": "Total Tokens",
+                            "value": 1099
+                        }
+                    ]
+                },
+                "responseTime": {
+                    "moreInfo": [
+                        {
+                            "key": "Completion Time",
+                            "value": 4.417
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
+```
 
 ## Configurations
 
@@ -120,6 +250,7 @@ Set the answering LLM you want to use, currently in this servce we have support 
 
 If you have selected "openai" as the answering LLM then set a valid apiKey for it. 
 Else if you have selected "azure_openai" as the answering LLM then set a valid userSubDomain, deploymentId & apiKey.
+Once you have edited the configurations, restart the server using the same command ```node server.js```
 
 ```
 {
@@ -249,4 +380,4 @@ curl --location --request POST '{{protocol}}://{{hostname}}/searchassistAnswerin
 ```
 
 ## Contributing
-Feel free to contribute to this project. Create a fork, make your changes, and submit a pull request.
+Feel free to contribute to this project by adding the other answering LLM. Create a fork, make your changes, and submit a pull request.
