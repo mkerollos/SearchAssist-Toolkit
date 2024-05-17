@@ -33,7 +33,7 @@ npm install
 ### 3. Run the Server
 node server.js
 
-The server will be running on http://localhost:8888.
+The server will be running on http://localhost:3000.
 
 ## API Endpoints
 
