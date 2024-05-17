@@ -86,6 +86,7 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, comp
     if (openaiAnswer && openaiAnswer.length > 0) {
         let answerSplitObj = openaiAnswer[0]['message']['content'];
         llmAnswer['data'][0]['answer'] = answerSplitObj;
+        llmAnswer['type'] = 'no_answer_snippet';
         let chunkIdsList = answerSplitObj.match(regexPattern);
 
         if (chunkIdsList) {
