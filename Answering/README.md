@@ -23,17 +23,19 @@ This Node.js public utility provides the capability to interact with any custom 
 ### 1. Clone the Repository
 
 git clone git@github.com:Koredotcom/SearchAssist-Toolkit.git
-
+cd SearchAssist-Toolkit/
 cd Answering
 
-### 2. Install Dependencies
+### 2. Install Dependencies (Optional, Not needed)
 
 npm install
 
 ### 3. Run the Server
 node server.js
 
-The server will be running on http://localhost:8888.
+In your local machine the server will be running on {{protocol}}://{{host}}:{{port}}. 
+
+If you this message on running the service proceed: Server is running on http://localhost:8888
 
 ## API Endpoints
 
