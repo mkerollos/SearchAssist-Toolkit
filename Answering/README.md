@@ -23,7 +23,7 @@ This Node.js public utility provides the capability to interact with any custom 
 ### 1. Clone the Repository
 
 git clone git@github.com:Koredotcom/SearchAssist-Toolkit.git
-
+cd SearchAssist-Toolkit/
 cd Answering
 
 ### 2. Install Dependencies
