@@ -1,6 +1,6 @@
-# Node.js Public Utility API
+# Custom LLM Answering Service Utility
 
-This Node.js public utility provides the capability to interact with any custom LLM for answering of your choice. Here we are integrating OpenAI for answering.
+This Node.js public utility provides the capability to interact with any custom LLM for answering of your choice. Here we are integrating OpenAI and Azure OpenAI for answering.
 
 ## Project Structure
 
