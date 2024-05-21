@@ -8,8 +8,6 @@ const fs = require('fs');
 const https = require('https');
 const bodyParser = require('body-parser');
 
-router.use(bodyParser.json());
-
 router.use(bodyParser.json({ limit: '50mb' }));
 router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
