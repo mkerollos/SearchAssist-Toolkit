@@ -26,7 +26,6 @@ const authenticateToken = (req, res, next) => {
   router.post('/', authenticateToken, async (req, res) => {
   try {
     console.log("<========== Public Answering Service Request is received ==========>");
-    // req.body = JSON.parse(req.body);
     const userQuery = req.body?.searchResults?.template?.spellCorrectedQuery || req.body?.searchResults?.template?.originalQuery || req.body?.searchResults?.spellCorrectedQuery || predefinedRequestData.answer_hook_user_input.spellCorrectedQuery;
     const chunksSentToLLM = req.body?.searchResults?.template?.chunk_result?.generative || req.body?.searchResults?.chunk_result?.generative || predefinedRequestData.answer_hook_user_input.template.chunk_result.generative;
     const answerConfig = require(path.join(base.basePath, base.answerConfigPath));
