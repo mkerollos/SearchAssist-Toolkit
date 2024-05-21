@@ -10,6 +10,9 @@ const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
 
+router.use(bodyParser.json({ limit: '50mb' }));
+router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 const authenticateToken = (req, res, next) => {
   const authToken = req.headers['api-token'];
   if (authToken === clientAuthToken) {
