@@ -42,13 +42,14 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
       const total_tokens = more_info?.total_tokens || 0;
 
       const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap, completion_time);
+      const generativeChunks = answer[2] || [];
       let contentList = answer[1]?.data[0]?.snippet_content || [];
       let ans = "";
       contentList.forEach((content) => {
         ans += content?.answer_fragment;
       });
 
-      debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data, answeringType);
+      debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data, answeringType, generativeChunks);
 
       resp = {
         graph_answer: { "payload": { "center_panel": answer[1] } },
@@ -90,6 +91,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
       const total_tokens = more_info?.total_tokens || 0;
 
       const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap, completion_time);
+      const generativeChunks = answer[2] || [];
 
       let contentList = answer[1]?.data[0]?.snippet_content || [];
       let ans = "";
@@ -97,7 +99,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
         ans += content?.answer_fragment;
       });
 
-      debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data, answeringType);
+      debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data, answeringType, generativeChunks);
       resp = {
         graph_answer: { "payload": { "center_panel": answer[1] } },
         debug_payload: debug_payload_info

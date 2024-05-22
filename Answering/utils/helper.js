@@ -1,5 +1,43 @@
 const regexPattern = /chk-[a-zA-Z0-9-]+/g;
 
+function transformChunkMap(chunkIdMap, chunkIds) {
+    const generativeChunks = [];
+
+    for (const chunkId in chunkIdMap) {
+        if (chunkIdMap.hasOwnProperty(chunkId)) {
+            const chunk = chunkIdMap[chunkId];
+            chunk.usedInAnswer = chunkIds.includes(chunkId);
+
+            const additionalInfo = {
+                chunkId: chunk.chunkId,
+                docId: chunk.docId,
+                sourceId: chunk.sourceId,
+                chunkType: chunk.chunkType,
+                extractionMethod: chunk.extractionMethod,
+            };
+
+            const moreInfo = [
+                { key: "Chunk Title", value: chunk.chunkTitle },
+                { key: "Page Number", value: chunk.pageNumber }
+            ];
+
+            delete chunk.chunkId;
+            delete chunk.docId;
+            delete chunk.sourceId;
+            delete chunk.chunkType;
+            delete chunk.extractionMethod;
+            delete chunk.pageNumber;
+            delete chunk.chunkTitle;
+
+            chunk.additionalInfo = additionalInfo;
+            chunk.moreInfo = moreInfo;
+
+            generativeChunks.push(chunk);
+        }
+    }
+    return generativeChunks;
+}
+
 async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
     let answerText = openaiAns;
     let answerTextTemp = answerText;
@@ -12,6 +50,9 @@ async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
     const lastIndex = answerTextTemp.lastIndexOf("[");
     answerTextTemp = answerTextTemp.slice(0, lastIndex);
     let chunkIds = answerText.match(regexPattern);
+
+    generativeChunks = transformChunkMap(chunkIdMap, chunkIds);
+
     if (chunkIds.length > 0) {
         let chunkId = chunkIds[0].split(',')[0];
         if (chunkIdMap[chunkId] && 'chunkMeta' in chunkIdMap[chunkId] && chunkIdMap[chunkId]['chunkMeta']) {
@@ -35,7 +76,7 @@ async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
             chunkId = chunkId.trim();
             chunkData = chunkIdMap[chunkId];
             if (chunkData) {
-                chunkIdMap[chunkId]['used_in_answer'] = true;
+                chunkIdMap[chunkId]['usedInAnswer'] = true;
                 let docId = chunkData["docId"];
                 let sourceId = chunkData["sourceId"];
                 let sourceType = chunkData["sourceType"];
@@ -69,7 +110,7 @@ async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
     } else {
         citationType = 'citation_snippet';
     }
-    return [answer, imageUrl, chunkData, citationType];
+    return [answer, imageUrl, chunkData, citationType, generativeChunks];
 }
 
 async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, completion_time) {
@@ -94,6 +135,7 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, comp
             let answer = response[0];
             let imageUrl = response[1];
             let citationType = response[3];
+            var generativeChunks = response[4] || [];
             llmAnswer['type'] = citationType;
             llmAnswer['data'][0]["isPresentedAnswer"] = true;
             llmAnswer['data'][0]["message"] = "Presented Answer";
@@ -113,9 +155,9 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, comp
             }
             answerFound = true;
         }
-        return [answerFound, llmAnswer];
+        return [answerFound, llmAnswer, generativeChunks];
     }
-    return [answerFound, llmAnswer];
+    return [answerFound, llmAnswer, generativeChunks];
 }
 
 async function formChunkIdMap(chunksSentToLLM) {
@@ -130,8 +172,8 @@ async function formChunkIdMap(chunksSentToLLM) {
         const chunk_id = result['chunkId'] || result['_source.chunkId'];
         chunkIdMap[chunk_id] = result;
         chunkIdMap[chunk_id]['score'] = result['_score'] ? result['_score'] : result['vector_score'];
-        chunkIdMap[chunk_id]['sent_to_LLM'] = false;
-        chunkIdMap[chunk_id]['used_in_answer'] = false;
+        chunkIdMap[chunk_id]['sentToLLM'] = false;
+        chunkIdMap[chunk_id]['usedInAnswer'] = false;
     }
     return chunkIdMap;
 }
@@ -167,9 +209,10 @@ async function getContextArrayChunks(prompt, chunksSentToLLM) {
         chunkIdMap[chunkIndex] = {
             ...result._source,
             score: result._score || "",
-            sent_to_LLM: false,
-            used_in_answer: false,
-            chunk_id: chunkId
+            sentToLLM: true,
+            usedInAnswer: false,
+            chunk_id: chunkId,
+            chunkRerank: false
         };
     }
 
@@ -193,7 +236,7 @@ async function getContextArrayChunks(prompt, chunksSentToLLM) {
 
         const checkTextTemp = `Content: ${content}, source_name: ${sourceName} chunk_id: ${chunkIndex}. `;
         checkText += checkTextTemp;
-        chunkIdMap[chunkIndex].sent_to_LLM = true;
+        chunkIdMap[chunkIndex].sentToLLM = true;
         promptContent.push(checkTextTemp);
     }
 
@@ -241,7 +284,7 @@ async function modifyPrompt(prompt, query, chunksSentToLLM) {
     }
 }
 
-function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, openaiResponse, answeringType) {
+function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, openaiResponse, answeringType, generativeChunks) {
     let { MODEL, TEMPERATURE, TOP_P, FREQUENCY_PENALTY } = answerConfigs;
     let MODEL_NAME = answeringType + ' ' + MODEL;
     const debug_payload_info = {
@@ -260,7 +303,8 @@ function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_t
                 moreInfo: []
             },
             responseTime: { moreInfo: [] }
-        }
+        },
+        generativeChunks: generativeChunks || []
     };
 
     const populateMoreInfo = (key, value) => {
