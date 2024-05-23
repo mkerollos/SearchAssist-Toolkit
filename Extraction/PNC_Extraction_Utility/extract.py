@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 from openai import AsyncOpenAI
 import dirtyjson
+from bs4.element import NavigableString
 
 OPENAI_KEY = os.environ['OPENAI_KEY']
 
@@ -175,8 +176,6 @@ def check_tag(tag, heading_ids):
 def collect_intermediate_tags(soup, start_tag, heading_ids):
     current_tag = start_tag
     intermediate_tags = ""
-    if start_tag.name == 'h3' and start_tag.find('a', id="Researching_a_Transaction") is not None:
-        print("found a parent")
     current_tag = current_tag.find_next()
     # Navigate through the document from start_tag to end_tag
     while current_tag:
@@ -186,6 +185,12 @@ def collect_intermediate_tags(soup, start_tag, heading_ids):
             print("Content already added")
         else:
             intermediate_tags += str(current_tag)
+            next_sibling = copy.deepcopy(current_tag.next_sibling)
+            while(next_sibling):
+                if isinstance(next_sibling, NavigableString):
+                    intermediate_tags += str(next_sibling)
+                next_sibling = next_sibling.next_sibling
+        #Check for text tags
         current_tag['added_as_content'] = True
         current_tag = current_tag.find_next()
     return intermediate_tags
