@@ -61,25 +61,8 @@ def clean_json(json_str):
     json_string = json_string.replace("\n","").replace("\t","")
     json_string = re.sub(r'(?<!\\)\\(?!["\\/bfnrt]|u[0-9a-fA-F]{4})', r'', json_string)
     json_string = replace_backslashes(json_string)
-    # raw_data = json_string.replace("\\\\\\\\","\\\\")
-    # raw_data = raw_data.replace("\\\\\\","\\\\")
     data['raw_data'] = json.loads(json_string)
     return data
-
-
-# # Example JSON string with backslashes
-# json_str = '{"key": "value\\with\\backslashes"}'
-#
-# # Remove backslashes using regex
-# json_str_without_backslashes = re.sub(r'\\', '', json_str)
-#
-# # Convert the modified JSON string back to a dictionary
-# json_dict = json.loads(json_str_without_backslashes)
-# Clean the JSON string
-
-
-
-
 
 async def parse_json(file_path):
     # Opening the html file
@@ -161,18 +144,6 @@ async def get_llm_response(content, instruction_msg):
     print('**Open Ai Response** {}'.format(completion_json_format))
     return completion_json_format
 
-def find_first_leaf_by_text(soup, text):
-    # Find all elements containing the text
-    matching_elements = soup.find_all(text=lambda t: text in t)
-    for element in matching_elements:
-        # Check if the element is a leaf node
-        if not element.find_parents():
-            return element
-        parent = element.parent
-        # Ensure it has no child tags (leaf node)
-        if parent and not parent.find(True):
-            return parent
-    return None
 async def fetch_lookup_from_llm_response(llm_response,toc_html):
     lookup_string = llm_response.get("choices",[])[0].get("message",{}).get("content","")
     lookup_json = json.loads(lookup_string)
@@ -189,39 +160,6 @@ async def fetch_lookup_from_llm_response(llm_response,toc_html):
                     heading_ids[heading_id] = True
     # stripped_lowercased_lookup = {key.strip().lower(): value for key, value in lookup_json.items()}
     return lookup_with_id, heading_ids
-
-# Define a condition for text replacement
-def replace_heading_conditionally(current_text, index_lookup_table, heading_start, heading_end ):
-    if current_text.lower() in index_lookup_table:
-        print(current_text)
-        return heading_start + " " + index_lookup_table[current_text.lower()]+ " " + heading_end
-    return current_text
-def enrich_page_html(soup_object, index_lookup_table, heading_start, heading_end):
-    heading_tags = ["h1","h2","h3","table"]
-    # "div -> b"
-    # Find all h1, h2, h3, and table elements with border="0"
-    elements = soup_object.find_all(heading_tags)
-
-    # Filter tables to include only those with border="0"
-    filtered_elements = []
-    for element in elements:
-        if element.name == 'table' and element.get('border') == '0':
-            filtered_elements.append(element)
-        elif element.name in ['h1', 'h2', 'h3']:
-            filtered_elements.append(element)
-
-    # Extract and print text from the filtered elements
-    for element in filtered_elements:
-        if element.name == 'table':
-            for child in element.find_all(text=True):
-                current_text = child.strip()
-                new_text = replace_heading_conditionally(current_text, index_lookup_table, heading_start, heading_end)
-                child.replace_with(new_text)
-        else:
-            current_text = element.get_text(strip=True)
-            new_text = replace_heading_conditionally(current_text, index_lookup_table, heading_start, heading_end)
-            element.string = new_text
-    return soup_object
 
 
 def check_tag(tag, heading_ids):
@@ -269,38 +207,6 @@ def extract_chunks_using_heading_id(soup, lookup_table,  heading_ids):
                     chunks.append(dict(heading = new_value, content = content_html))
     return chunks
 
-def extract_content_between_headings(soup, lookup_table):
-    # List to store the extracted content
-    extracted_content = []
-
-    # Convert lookup table to a list of (heading_id, value) tuples
-    headings = [(item['heading_id'].lstrip('#'), item['value']) for item in lookup_table.values()]
-
-    # Iterate through the headings and extract content between them
-    for i, (heading_id, heading_value) in enumerate(headings):
-        # Find the current heading tag
-        current_heading_tag = soup.find('a', id=heading_id)
-        if current_heading_tag == None:
-            continue
-        # Determine the next heading tag if it exists
-        next_heading_tag = None
-        if i + 1 < len(headings):
-            next_heading_id = headings[i + 1][0]
-            next_heading_tag = soup.find('a', id=next_heading_id)
-
-        # Extract content between the current heading and the next heading
-        content = []
-        sibling = current_heading_tag.find_next_sibling()
-        while sibling and sibling != next_heading_tag:
-            content.append(str(sibling))
-            sibling = sibling.find_next_sibling()
-
-        # Join the content and store it with the heading value
-        content_str = ''.join(content).strip()
-        extracted_content.append(dict(heading = heading_value, content =content_str))
-
-    return extracted_content
-
 def split_into_chunks(text, heading_start, heading_end):
     raw_chunks = text.split(heading_start)
     chunks = list()
@@ -335,30 +241,23 @@ def convert_chunks_to_markdown(chunks):
 async def extract_chunks(input_html, **kwargs):
     soup =  BeautifulSoup(input_html, 'html.parser')
 
-    # todo Clean the html before sending to LLM
+    #  Clean the html before sending to LLM
     # for tag in soup(["script", "style", "header", "footer"]):
     #     tag.decompose()
 
-    #todo Identify and Extract ToC for the index
+    #Identify and Extract ToC for the index
     toc_html = await extract_toc(soup)
     index_html_as_string = [str(toc) for toc in toc_html]
     index_as_markdown = md("\n".join(index_html_as_string))
-    #todo Make LLM call using the above html to get a lookup table of headings-> hierarchical heading - make this configurable to support any model with/without proxy
+    #Make LLM call using the above html to get a lookup table of headings-> hierarchical heading - make this configurable to support any model with/without proxy
     llm_response = await get_llm_response(index_as_markdown, instruction_msg)
-    # llm_response = {'chat_id': 'chatcmpl-9RNlfE9CwAq4aC4dPiJbNWcndBy8H', 'choices': [{'message': {'content': '{\n"Overview": "Overview",\n"When to submit a dispute using EDGE/Disputes Tool": "Overview When to submit a dispute using EDGE/Disputes Tool",\n"Researching a transaction": "Overview Researching a transaction",\n"Important tips before submitting a dispute": "Overview Important tips before submitting a dispute",\n"Timeframe for PNC to investigate and resolve customer debit/banking card disputes": "Overview Timeframe for PNC to investigate and resolve customer debit/banking card disputes",\n"About debit/banking card disputes": "Overview About debit/banking card disputes",\n"Disputing a higher number of transactions": "Overview About debit/banking card disputes Disputing a higher number of transactions",\n"Debit/banking card dispute resolution": "Overview Debit/banking card dispute resolution",\n"Assisting customers with questions or updates on existing disputes": "Overview Assisting customers with questions or updates on existing disputes",\n"How To": "How To",\n"Submit or research a dispute using the Disputes Tool": "How To Submit or research a dispute using the Disputes Tool",\n"ACH credit": "How To Submit or research a dispute using the Disputes Tool ACH credit",\n"ACH debit (electronic withdrawal, other than PNC Online Banking)": "How To Submit or research a dispute using the Disputes Tool ACH debit (electronic withdrawal, other than PNC Online Banking)",\n"CD credits and debits (transfers in to fund the account from an external account, transfers out for interest paid or funds withdrawn to an external account)": "How To Submit or research a dispute using the Disputes Tool CD credits and debits (transfers in to fund the account from an external account, transfers out for interest paid or funds withdrawn to an external account)",\n"Debit/banking card (ATM, PIN point-of-sale or non-PIN point-of-sale) or card-free (ATM)": "How To Submit or research a dispute using the Disputes Tool Debit/banking card (ATM, PIN point-of-sale or non-PIN point-of-sale) or card-free (ATM)",\n"Deposit, check or teller withdrawal": "How To Submit or research a dispute using the Disputes Tool Deposit, check or teller withdrawal",\n"Digital cards in a mobile wallet (for example, Apple Pay)": "How To Submit or research a dispute using the Disputes Tool Digital cards in a mobile wallet (for example, Apple Pay)",\n"Mobile deposit and PNC Remote Deposit": "How To Submit or research a dispute using the Disputes Tool Mobile deposit and PNC Remote Deposit",\n"Zelle®": "How To Submit or research a dispute using the Disputes Tool Zelle®",\n"Check due to fraud/endorsement issues": "How To Submit or research a dispute using the Disputes Tool Check due to fraud/endorsement issues",\n"Altered check": "How To Submit or research a dispute using the Disputes Tool Check due to fraud/endorsement issues Altered check",\n"Payee did not receive funds (forged endorsement)": "How To Submit or research a dispute using the Disputes Tool Check due to fraud/endorsement issues Payee did not receive funds (forged endorsement)",\n"Counterfeit check": "How To Submit or research a dispute using the Disputes Tool Check due to fraud/endorsement issues Counterfeit check",\n"Forged maker signature": "How To Submit or research a dispute using the Disputes Tool Check due to fraud/endorsement issues Forged maker signature",\n"Unauthorized signature": "How To Submit or research a dispute using the Disputes Tool Check due to fraud/endorsement issues Unauthorized signature",\n"Unauthorized remotely generated check": "How To Submit or research a dispute using the Disputes Tool Check due to fraud/endorsement issues Unauthorized remotely generated check",\n"None of the above": "How To Submit or research a dispute using the Disputes Tool Check due to fraud/endorsement issues None of the above",\n"Dispute and research video banking machine (VBM) transactions": "How To Dispute and research video banking machine (VBM) transactions",\n"Identify a VBM transaction": "How To Dispute and research video banking machine (VBM) transactions Identify a VBM transaction",\n"Research a VBM transaction": "How To Dispute and research video banking machine (VBM) transactions Research a VBM transaction",\n"File a dispute": "How To Dispute and research video banking machine (VBM) transactions File a dispute",\n"Submit a dispute": "How To Dispute and research video banking machine (VBM) transactions Submit a dispute",\n"Email templates": "How To Dispute and research video banking machine (VBM) transactions Email templates",\n"Submit a dispute on a purged account": "How To Submit a dispute on a purged account",\n"Submit a dispute for something not covered": "How To Submit a dispute for something not covered",\n"Other Considerations": "Other Considerations",\n"Assist customers with filing debit card disputes through Online Banking": "Other Considerations Assist customers with filing debit card disputes through Online Banking",\n"Customer requests assistance completing the debit/banking card dispute questionnaire": "Other Considerations Customer requests assistance completing the debit/banking card dispute questionnaire",\n"Customer requests assistance returning the debit/banking card dispute questionnaire or supplemental documents for their debit/banking card dispute": "Other Considerations Customer requests assistance returning the debit/banking card dispute questionnaire or supplemental documents for their debit/banking card dispute",\n"If the customer\'s transaction doesn\'t display in Transaction History": "Other Considerations If the customer\'s transaction doesn\'t display in Transaction History",\n"When to submit a dispute with Centralized Reconcilement Services for a Video Banking transaction": "Other Considerations When to submit a dispute with Centralized Reconcilement Services for a Video Banking transaction",\n"When immediate provisional credit isn\'t issued but the customer expresses a financial hardship": "Other Considerations When immediate provisional credit isn\'t issued but the customer expresses a financial hardship",\n"Interest adjustments for Reg E disputes": "Other Considerations Interest adjustments for Reg E disputes",\n"Supporting Resources": "Supporting Resources",\n"Attachment": "Attachment",\n"Adjustments email template": "Attachment Adjustments email template",\n"ATM Reconcilement and Adjustments email template": "Attachment ATM Reconcilement and Adjustments email template",\n"REG E email template": "Attachment REG E email template"\n}', 'role': 'assistant'}}], 'usage': '{"completion_tokens": 1347, "prompt_tokens": 1061, "total_tokens": 2408}'}
     index_lookup_table, heading_ids = await fetch_lookup_from_llm_response(llm_response, toc_html)
     print(index_lookup_table)
-    #todo Enrich the page html using the lookup table from the LLM response and add marker for splitting
-    heading_start = "^<<^"
-    heading_end = "^>>^"
+    #Enrich the page html using the lookup table from the LLM response and breakdown the document into chunks
     extracted_chunks = extract_chunks_using_heading_id(soup,index_lookup_table,heading_ids)
     markdown_chunks = convert_chunks_to_markdown(extracted_chunks)
-    # enriched_html = enrich_page_html(soup, index_lookup_table, heading_start, heading_end)
-    # html_as_markdown = md(str(enriched_html))
-    #todo Split the html into chunks based on the marker
+    # Split the html into chunk if failed to extract using the above approach
     # chunks = split_into_chunks(html_as_markdown, heading_start, heading_end)
-    # extracted_chunks = extract_content_between_headings(enriched_html, index_lookup_table)
-
     sa_structured_data = await convert_to_SA_format(markdown_chunks, **kwargs)
     return sa_structured_data
 
@@ -374,7 +273,6 @@ async def helper(input_directory_path, output_directory_path):
     # Loop through all files in the directory
     for filename in os.listdir(input_directory_path):
         file_path = os.path.join(input_directory_path, filename)
-        input_html = ""
         if os.path.isfile(file_path) and file_path.endswith('.json'):
             html_input_file_path = os.path.join(input_html_directory_path, f"{os.path.splitext(filename)[0]}_html.html")
             if os.path.exists(html_input_file_path):
