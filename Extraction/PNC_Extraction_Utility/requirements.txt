@@ -1,0 +1,5 @@
+aiofiles== 23.1.0
+beautifulsoup4==4.12.3
+markdownify==0.12.1
+openai==1.25.2
+dirtyjson==1.0.8

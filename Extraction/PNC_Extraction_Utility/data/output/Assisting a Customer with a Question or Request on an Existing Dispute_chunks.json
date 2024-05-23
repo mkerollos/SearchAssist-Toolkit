@@ -1,0 +1,65 @@
+[
+    {
+        "title": "Overview",
+        "content": "",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    },
+    {
+        "title": "Overview Assisting customers with questions or updates on existing disputes",
+        "content": "[How To](#howto)\u00a0\n\n",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    },
+    {
+        "title": "Overview Canceling a dispute",
+        "content": "  \n  \n**reversed within one to five business days**",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    },
+    {
+        "title": "How To",
+        "content": "* [Cancel a debit/banking card, ACH or ATM dispute](#CancelDebitBankingCardACHATM)\n* [Cancel a check or teller withdrawal dispute](#CancelCheckTellerWithdrawal)\n* [Provide the customer with an update on an existing dispute](#provideupdate)\n* [Update an existing dispute](#UpdateDispute)\n\n\u00a0\n\n",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    },
+    {
+        "title": "How To Cancel a Debit/Banking Card, ACH or ATM Dispute",
+        "content": "**Cancel a debit/banking card, ACH or ATM dispute**  \nCustomers can request to cancel a dispute in person or over the phone in the branch or in the Customer Care Center.  \n\u00a0\n\n1. [Identify the customer](https://pnc.my.site.com/s/procedureDetailPage?name=identifying-customers-kyc-consumer-account-maintenance-and-inquiries-customer-care-center-33137).\n2. Which system are you using to cancel the dispute?\\\n\t* **Genesis** \u2013 From the customer's\u00a0**Contact or Business**\u00a0folder, select the deposit account that the dispute was submitted from. Click\u00a0**Disputes**.\n\t* **SPIRIT** - Access the\u00a0**Deposit Notebook**\u00a0in SPIRIT. Select the\u00a0**Trans History**\u00a0tab and click\u00a0**Disputes**.\\\n\nThe\u00a0**Disputes Tool**\u00a0screen will display any disputable transactions and any prior adjustments and disputes.  \n\u00a03. Locate the dispute in the\u00a0**Prior Disputes**\u00a0section.\n4. Click\u00a0**Cancel**.\n5. Complete the\u00a0**Reason for Cancellation**\u00a0field with information provided by the customer, including why the customer is requesting the dispute be canceled.\n6. Select one of the following:\u00a0\\\n\t* **Entire claim is to be canceled** \u2013 Select if the customer wants to cancel the dispute for all transactions in the service request.\n\t* **Only a portion of the claim is to be canceled** - Select if the customer wants to cancel the dispute for one or more (but not all) of the transactions in the service request. You\u2019ll be required to select the appropriate dates and amounts to be canceled.\\\n7. Enter additional comments, if needed.\n8. Click\u00a0**Submit**.\u00a0A\u00a0**Successful Response**\u00a0message will appear.\n9. Let your customer know they\u2019ll receive a letter in the mail confirming the dispute has been canceled. Tell your customer that if PNC previously issued credit or fee refunds to their account related to the disputed transaction(s) being cancelled the credit or fee refunds will be reversed.\n\n[[Back to top]](#top)  \n\u00a0\n\n",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    },
+    {
+        "title": "How To Cancel a Check or Teller Withdrawal Dispute",
+        "content": "**Cancel a check or teller withdrawal dispute**  \nCustomers can request to cancel a dispute in person or over the phone in the branch or in the Customer Care Center.  \n\u00a0\n\n1. [Identify the customer](https://pnc.my.site.com/s/procedureDetailPage?name=identifying-customers-kyc-consumer-account-maintenance-and-inquiries-customer-care-center-33137).\n2. Which system are you using to cancel the dispute?\\\n\t* **Genesis** - From the customer's\u00a0**Contact or Business**\u00a0folder, select the deposit account that the dispute was submitted from. Click\u00a0**Disputes**.\n\t* **SPIRIT** - Access the\u00a0**Deposit Notebook**\u00a0in SPIRIT. Select the\u00a0**Trans History**\u00a0tab and click\u00a0**Disputes**.\\\n\nThe **Disputes Tool** screen will display any disputable transactions and any prior adjustments and disputes.  \n\u00a03. Locate the dispute in the\u00a0**Prior Disputes**\u00a0section. If the dispute hasn\u2019t been assigned, you can add notes to the dispute to cancel it. Once it\u2019s assigned, the partner will see the note to cancel and will cancel the dispute. You can tell your customer you\u2019ve requested the dispute be canceled.\n4. Determine if the original dispute was due to fraud. You can ask the customer or look for words like \"forged signature,\u201d \u201cunauthorized check,\u201d \u201cendorsement issue,\u201d \u201ccheck alterations,\u201d \u201cunauthorized signature\u201d or \u201ccounterfeit\u201d in the dispute title.\\\n\t* **If the transaction was disputed due to suspected fraud:**\\\n\t\t+ **For endorsement issues or check alterations**, email the request to cancel the dispute to the [Enterprise Fraud Group \u2013 Without Entry Claims Group](https://pnc.my.site.com/s/departmentDirectoryDetailPage?name=dru-detection-and-resolution-unit-37361). Let your customer know that their dispute will be canceled.\n\t\t+ **For all other suspected fraud issues**, contact the [Enterprise Fraud Group -\u00a0Check Fraud Investigations](https://pnc.my.site.com/s/departmentDirectoryDetailPage?name=dru-detection-and-resolution-unit-37361). Let your customer know that their dispute will be canceled.\\\n\t* **If the original transaction wasn\u2019t fraud related:** Call the [Bank Operations Support Center](https://pnc.my.site.com/s/departmentDirectoryDetailPage?name=bank-operations-support-center-33195#BOSC)\u00a0to cancel the dispute. Provide the service request number and the reason for cancellation to the Bank Operations Support Center representative. Let your customer know that their dispute will be canceled.\\\n\n[[Back to top]](#top)  \n\u00a0\n\n",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    },
+    {
+        "title": "How To Provide the customer with an update on an existing dispute",
+        "content": "  \n* ACH credit\n* ACH debit (electronic withdrawal, other than PNC Online Banking)\n* Debit/banking card (ATM, PIN point-of-sale or non-PIN point-of-sale) or card-free (ATM)\n* Deposit, check or teller withdrawal\n* Non-fraud check disputes\n* Digital cards in a mobile wallet (for example, Apple Pay)\n\n  \n**If the dispute is open**1. Advise the customer of the timeframe to resolve the dispute or issue provisional credit. Refer to the **Timeframe for PNC to investigate and resolve customer debit/banking card disputes** section of [Disputing or Researching a Transaction Using the Disputes Tool](https://pnc.my.site.com/s/procedureDetailPage?name=disputing-or-researching-a-transaction-using-the-disputes-tool-49413#timeframe).\n2. Review the notes in the dispute CRISS case and provide the customer with an update if available. If an update isn\u2019t available, tell the customer the dispute is still in progress. Refer to the dispute resolution timeframe.\n\n**If the dispute is closed**1. Review the notes in the dispute CRISS case and provide the customer with the outcome of the dispute.\n2. If you need additional details that aren\u2019t available in the CRISS case, contact the\u00a0[Bank Operation Support Center (BOSC)](https://pnc.my.site.com/s/departmentDirectoryDetailPage?name=bank-operations-support-center-33195#BOSC)\u00a0to request information.\u00a0**Don't**transfer the customer to the BOSC.\n\n[[Back to top]](#top)  \n\u00a0\n\n",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    },
+    {
+        "title": "How To Update an existing dispute",
+        "content": "**Update an existing dispute**  \nCustomers may contact PNC to add additional transactions or information to their dispute before the dispute is resolved.  \n  \nWhen this happens, **don\u2019t** cancel the original dispute. Follow the steps below.  \n\u00a0\n\n1. **Don\u2019t** add comments in the dispute CRISS case after it\u2019s been submitted because the department working the case won\u2019t receive a notification that the case has been updated.\n2. If you need to:\\\n\t* Add notes to the dispute case after it\u2019s submitted, contact the [Bank Operation Support Center (BOSC)](https://pnc.my.site.com/s/departmentDirectoryDetailPage?name=bank-operations-support-center-33195#BOSC).\\\n\t\t+ If it\u2019s outside of BOSC hours of operation, go to the next step.\\\n\t* Add transactions to the dispute case after it\u2019s submitted, go to the next step.\\\n3. [Submit a new\u00a0dispute](https://pnc.my.site.com/s/procedureDetailPage?name=disputing-or-researching-a-transaction-using-the-disputes-tool-49413)\u00a0with the new or additional information/transactions.\u00a0\\\n\t* **Don\u2019t cancel the first dispute**.\n\t* If you\u2019re adding transactions to a dispute case:\\\n\t\t+ If the first dispute was **denied**, include all disputed transactions in the new dispute.\n\t\t+ If the first dispute is still **open**, include only the new transactions.\\\n\t* In the new dispute comments, reference the first dispute CRISS case number. If the second dispute is for a:\\\n\t\t+ **Debit/banking card, ACH or ATM\u00a0transaction dispute**:\u00a0Include the CRISS case number of the first dispute.\n\t\t+ **Check or teller withdrawal\u00a0transaction dispute**:\u00a0[File a new Security Incident Report (SIR).](https://pnc.my.site.com/s/procedureDetailPage?name=reporting-suspected-fraud-and-other-incidents-22381)\\\\\n",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    },
+    {
+        "title": "Supporting Resources",
+        "content": "### \n\n  \n\n\n| **Related Topics** | \\* [Transaction Disputes Resource Page](https://pnc.my.site.com/s/procedureDetailPage?name=disputes-resource-page-10991) * [Disputing or Researching a Transaction Using the Disputes Tool](https://pnc.my.site.com/s/procedureDetailPage?name=disputing-or-researching-a-transaction-using-the-disputes-tool-49413)  \\ |\n| --- | --- |\n\n[Assisting a Customer with a Question or Request on an Existing Dispute](https://pnc--qa1.sandbox.my.site.com/s/procedureDetailPage?type=preview&name=canceling-or-editing-a-transaction-dispute-65251)",
+        "url": "",
+        "meta_data": {},
+        "doc_name": "Assisting a Customer with a Question or Request on an Existing Dispute"
+    }
+]
