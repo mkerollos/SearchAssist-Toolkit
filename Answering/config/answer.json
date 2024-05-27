@@ -1,5 +1,6 @@
 {
-    "ANSWERING_LLM": "azure_openaai",
+    "ANSWERING_LLM": "azure_openai",
+    "ANSWERING_TYPE": "Custom Integration",
     "openai": {
         "endpoint": "https://api.openai.com/v1/chat/completions",
         "apiKey": "REMOVED",
@@ -21,10 +22,10 @@
     },
     "azure_openai": {
         "endpoint": "https://{userSubDomain}.openai.azure.com/openai/deployments/{deploymentId}/chat/completions?api-version={apiVersion}",
-        "userSubDomain": "koreopenai",
-        "deploymentId": "Koreai-GPT35-Turbo",
+        "userSubDomain": "REMOVED",
+        "deploymentId": "REMOVED",
         "apiVersion": "2023-03-15-preview",
-        "apiKey": "d0f6560007a9435d9111cc497c7d5c11",
+        "apiKey": "REMOVED",
         "prompt": [
             {
                 "role": "system",

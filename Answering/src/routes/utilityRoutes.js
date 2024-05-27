@@ -8,14 +8,8 @@ const fs = require('fs');
 const https = require('https');
 const bodyParser = require('body-parser');
 
-router.use(bodyParser.json());
-
-// Read the client certificate file
-const clientCertPath = '/data/certs/mutualssl/cert.pem';
-const clientCertBuffer = fs.readFileSync(clientCertPath);
-
-// Use the buffer as expectedCert
-const expectedCert = clientCertBuffer;
+router.use(bodyParser.json({ limit: '50mb' }));
+router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 const authenticateToken = (req, res, next) => {
   const authToken = req.headers['api-token'];
@@ -26,27 +20,12 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-// Middleware to verify the client certificate
-const verifyClientCert = (req, res, next) => {
-  // Verify the client certificate
-  const clientCert = req.socket.getPeerCertificate();
-  // Check if the client certificate is provided and valid
-  if (!clientCert || Object.keys(clientCert).length === 0) {
-    return res.status(403).json({ error: 'Unauthorized: Client certificate not provided or invalid.' });
-  }
-  // Compare the client certificate against the expected certificate
-  if (clientCert.raw.toString('base64') !== expectedCert.toString('base64')) {
-    return res.status(403).json({ error: 'Unauthorized: Invalid client certificate.' });
-  }
-  next();
-};
-
 // router.post('/answer', authenticateToken, verifyClientCert, async (req, res) => {
-  router.post('/answer', authenticateToken, async (req, res) => {
+  router.post('/', authenticateToken, async (req, res) => {
   try {
     console.log("<========== Public Answering Service Request is received ==========>");
-    const userQuery = req.body?.searchResults?.template?.spellCorrectedQuery || req.body?.searchResults?.template?.originalQuery || predefinedRequestData.answer_hook_user_input.spellCorrectedQuery;
-    const chunksSentToLLM = req.body?.searchResults?.template?.chunk_result?.generative || predefinedRequestData.answer_hook_user_input.template.chunk_result.generative;
+    const userQuery = req.body?.searchResults?.template?.spellCorrectedQuery || req.body?.searchResults?.template?.originalQuery || req.body?.searchResults?.spellCorrectedQuery || predefinedRequestData.answer_hook_user_input.spellCorrectedQuery;
+    const chunksSentToLLM = req.body?.searchResults?.template?.chunk_result?.generative || req.body?.searchResults?.chunk_result?.generative || predefinedRequestData.answer_hook_user_input.template.chunk_result.generative;
     const answerConfig = require(path.join(base.basePath, base.answerConfigPath));
     const answeringServicePromise = utilityController.answeringService(userQuery, answerConfig, chunksSentToLLM);
 
