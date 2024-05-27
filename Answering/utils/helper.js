@@ -285,16 +285,21 @@ async function modifyPrompt(prompt, query, chunksSentToLLM) {
 }
 
 function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, openaiResponse, answeringType, generativeChunks) {
-    let { MODEL, TEMPERATURE, TOP_P, FREQUENCY_PENALTY } = answerConfigs;
-    let MODEL_NAME = answeringType + ' ' + MODEL;
+    let { MODEL, TEMPERATURE, TOP_P, FREQUENCY_PENALTY, MODE, RESPONSE_TOKEN_LIMIT, PRESENCE_PENALTY } = answerConfigs;
+    let MODEL_NAME = MODEL ? answeringType + ' ' + MODEL : answeringType;
     const debug_payload_info = {
         prompt: {
-            promptText: prompt,
+            // promptText: prompt,
+            promptText: '',
             moreInfo: [
                 { "key": "Model", "value": MODEL_NAME },
+                /*
                 { "key": "Temperature", "value": TEMPERATURE },
                 { "key": "Frequency Penalty", "value": FREQUENCY_PENALTY },
-                { "key": "TopP", "value": TOP_P }
+                { "key": "TopP", "value": TOP_P },
+                { "key": "Mode", "value": MODE },
+                { "key": "Response Token Limit", "value": RESPONSE_TOKEN_LIMIT },
+                { "key": "Presence Penalty", "value": PRESENCE_PENALTY }*/
             ]
         },
         llmResponse: {
@@ -321,7 +326,7 @@ function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_t
     let chunkIds = answerText.match(regexPattern);
     debug_payload_info.llmResponse.responseDetails.completionText.chunkIds = chunkIds;
     populateMoreInfo("Completion Tokens", completion_tokens);
-    populateMoreInfo("Prompt Tokens", prompt_tokens);
+    // populateMoreInfo("Prompt Tokens", prompt_tokens);
     populateMoreInfo("Total Tokens", total_tokens);
 
     return debug_payload_info;

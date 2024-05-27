@@ -18,7 +18,9 @@
         "MAX_TOKENS": 512,
         "TOP_P": 1,
         "FREQUENCY_PENALTY": 0,
-        "PRESENCE_PENALTY": 0
+        "PRESENCE_PENALTY": 0,
+        "MODE": "chat_completion",
+        "RESPONSE_TOKEN_LIMIT": 512
     },
     "azure_openai": {
         "endpoint": "https://{userSubDomain}.openai.azure.com/openai/deployments/{deploymentId}/chat/completions?api-version={apiVersion}",
@@ -41,6 +43,8 @@
         "MAX_TOKENS": 512,
         "TOP_P": 1,
         "FREQUENCY_PENALTY": 0,
-        "PRESENCE_PENALTY": 0
+        "PRESENCE_PENALTY": 0,
+        "MODE": "chat_completion",
+        "RESPONSE_TOKEN_LIMIT": 512
     }
 }
