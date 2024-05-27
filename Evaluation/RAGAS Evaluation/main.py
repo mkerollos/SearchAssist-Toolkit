@@ -12,9 +12,7 @@ def evalute_scores(excel_file):
     query_values = df['Query'].dropna().tolist()
     ground_truth=df['GroundTruth'].dropna().to_list()
     print(query_values)
-    # query_values=["what is eva?","What advanced runtime configurations are available to users with Kore.ai's Basic RAG offering?"]
-
-        # Print the values
+    
     chunk_json=[]
     # Write headers
     # ws.cell(row=1, column=1, value="400chunks-8chunksToLLM(adtalem)")
@@ -38,15 +36,7 @@ def evalute_scores(excel_file):
         context_url.append(data['context_url'])
 
 
-        # # chunk_json.append(data)
-        # # Find the first empty row in column A
-        # row_number = 1
-        # while ws.cell(row=row_number, column=1).value:
-        #     row_number += 1
 
-        # # Write values to the first empty row
-        # for col, value in enumerate(data.values(), start=1):
-        #     ws.cell(row=row_number, column=col, value=value)
     df=evalRag.evaluate_data(queries,answers,ground_truth_values,contexts,context_url)
     df.to_excel('output.xlsx', index=False)
     # print(len(chunk_json))
@@ -55,7 +45,6 @@ def evalute_scores(excel_file):
 
     # Save the workbook
     # wb.save("AddtionalPrompt400To800.xlsx")
-
-
-excel_file= r'/home/Ragul.Sivakumar/Documents/sa_input.xlsx'
-evalute_scores(excel_file)
+if __name__=="__main__":
+    excel_file= r'/home/Ragul.Sivakumar/Documents/sa_input.xlsx'
+    evalute_scores(excel_file)
