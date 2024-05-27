@@ -16,7 +16,6 @@ import os
 
 
 
-
 def evaluate_data(queries,answers,ground_truth_values,contexts,context_url):
     data = {
     'question':queries,

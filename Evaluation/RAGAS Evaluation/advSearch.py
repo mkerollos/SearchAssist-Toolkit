@@ -1,7 +1,7 @@
 import requests
 from openpyxl import Workbook
 import time
-
+from configManager import read_config
 
 def get_context(answer):
     contexts=[]
@@ -14,9 +14,12 @@ def get_context(answer):
     return contexts,context_urls
 
 def search_assist_api(query):
-    url = 'https://searchassist-app.kore.ai/searchassistapi/external/stream/st-3908955b-b763-5702-9de6-cb268a1eb648/advancedSearch'
+    config=read_config(r'./config.json')
+    auth_token=config.get('auth_token')
+    app_id=config.get('app_id')
+    url = f'https://searchassist-app.kore.ai/searchassistapi/external/stream/{app_id}/advancedSearch'
     headers = {
-        'auth': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6ImNzLTA0ZTViZGNhLWY4MTYtNTUyZS04NmY4LTczYjU0YWYyYjU4ZiJ9.hdmfwW-fVCiBdc6UUZjp2JAmycDhC0a7LjDEoGXlT64',
+        'auth': auth_token,
         'Content-Type': 'application/json'
     }   
     data = {
@@ -38,7 +41,6 @@ def search_assist_api(query):
         # This will catch errors in navigating the data dictionary
         print(f"Data parsing failed: Key {e} not found in the response")
         return None
-# print(search_assist_api('smart assist'))
 def get_Bot_Response(query,truth):
     print(query)
     answer=search_assist_api(query)

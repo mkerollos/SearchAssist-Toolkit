@@ -1,7 +1,9 @@
 import pandas as pd
 from openpyxl import Workbook
 import advSearch as adv
-import ragsEval as evalRag
+import ragasEval as evalRag
+from configManager import read_config
+
 def evalute_scores(excel_file):
 
     # Read the Excel file
@@ -38,7 +40,9 @@ def evalute_scores(excel_file):
 
 
     df=evalRag.evaluate_data(queries,answers,ground_truth_values,contexts,context_url)
-    df.to_excel('output.xlsx', index=False)
+    config=read_config(r'./config.json')
+    output_file=fr"{config.get('output_excel_file','output.xlsx')}"
+    df.to_excel(output_file, index=False)
     # print(len(chunk_json))
     # print(chunk_json)
     
@@ -46,5 +50,8 @@ def evalute_scores(excel_file):
     # Save the workbook
     # wb.save("AddtionalPrompt400To800.xlsx")
 if __name__=="__main__":
-    excel_file= r'/home/Ragul.Sivakumar/Documents/sa_input.xlsx'
+
+    config=read_config(r'./config.json')
+    excel_file= fr"{config.get('input_excel_file')}"
+
     evalute_scores(excel_file)
