@@ -10,7 +10,7 @@ import json
 import time
 import re
 import aiofiles
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from markdownify import markdownify as md
 from openai import AsyncOpenAI
 import dirtyjson
@@ -22,7 +22,7 @@ open_ai_conf = {
     "API_BASE":"https://api.openai.com/v1/",
     "model": "gpt-3.5-turbo-16k",
     "API_KEY":OPENAI_KEY,
-    "max_tokens":2000,
+    "max_tokens":9000,
     "temperature":0.5,
     "top_p":1,
     "timeout":150,
@@ -78,7 +78,141 @@ async def parse_json(file_path):
                 if item.get("value", ""):
                     html_string += item.get("value")
     return html_string
-async def extract_toc (soup_obj):
+
+async def collect_intermediate_tocs(soup, current_id, subsequent_ids):
+    # Find the <a> tag with the given id or name
+
+
+    # Create a new <div> to hold the intermediate TOCs
+    intermediate_ids = []
+    next_sibling = current_a_tag.find_next_sibling()
+
+    while next_sibling:
+        if next_sibling.name == 'ul':
+            intermediate_ids.append(next_sibling)
+        elif next_sibling.name == 'a' and (next_sibling.get('id') in subsequent_ids or next_sibling.get('name') in subsequent_ids):
+            break
+        next_sibling = next_sibling.find_next_sibling()
+    return intermediate_ids
+
+def check_tag(tag, heading_ids):
+    if tag.name == "a" and heading_ids.get("#" + str(tag.get("id", tag.get("name", "")))):
+        return True
+
+    for child in tag.children:
+        if hasattr(child, 'children'):  # Ensure the child is a tag and not a string or comment
+            if(check_tag(child, heading_ids)):
+                print(f"Found a match inside : {tag}")
+                return True
+    return False
+def collect_intermediate_tags(soup, start_tag, heading_ids, tag_to_collect = None):
+    print("Collecting Intermediate Tags starting from {}".format(start_tag))
+    current_tag = start_tag
+    intermediate_tags = BeautifulSoup("", "html.parser")
+    next_tag = current_tag.next_element
+    while(tag_to_collect is None and next_tag):
+        if isinstance(next_tag, NavigableString):
+            tag_to_append = copy.deepcopy(next_tag)
+            intermediate_tags.append(tag_to_append)
+            intermediate_tags.append(" ")
+        else:
+            break
+        next_tag = next_tag.next_element
+    current_tag = current_tag.find_next()
+
+    # Navigate through the document from start_tag to end_tag
+    while current_tag:
+        if check_tag(current_tag, heading_ids):
+            print("Found the ending tag inside {}".format(current_tag))
+            break
+        if current_tag.parent and current_tag.parent.get("added_as_content"):
+            pass
+        else:
+            if tag_to_collect is None or current_tag.name == tag_to_collect:
+                tag_to_append = copy.deepcopy(current_tag)
+                intermediate_tags.append(tag_to_append)
+                # current_tag['added_as_content'] = True
+            next_sibling = copy.deepcopy(current_tag.next_sibling)
+            while(next_sibling):
+                if tag_to_collect is None and isinstance(next_sibling, NavigableString):
+                    tag_to_append = copy.deepcopy(next_sibling)
+                    intermediate_tags.append(tag_to_append)
+                next_sibling = next_sibling.next_sibling
+        #Check for text tags
+        current_tag['added_as_content'] = True
+        current_tag = current_tag.find_next()
+    return intermediate_tags
+
+def clean_sub_index(sub_index):
+    filtered_ul = BeautifulSoup('<ul></ul>', 'html.parser').ul
+
+    if not (sub_index.next and sub_index.next.name == "ul" ):
+        return filtered_ul
+    else:
+        sub_index = sub_index.next
+    # Create a new <ul> tag for the filtered <li> tags
+
+    # Iterate through each child <li> tag of the given <ul>
+    for li in sub_index.find_all('li', recursive=False):
+        # Get all children of the <li> tag
+        children = list(li.children)
+
+        # Check if the <li> tag's first child is an <a> tag
+        if len(children) >= 1 and isinstance(children[0], Tag) and children[0].name == 'a':
+            # Append the <li> tag to the filtered <ul>
+            filtered_ul.append(li)
+
+    return filtered_ul
+
+
+def expand_toc(ul_tag, soup_obj, heading_ids = None, all_a_tags = None):
+    if ul_tag.name!="ul":
+        return []
+    if not heading_ids:
+        heading_ids = dict()
+    if not all_a_tags:
+        all_a_tags = soup_obj.find_all("a")
+    a_tags = ul_tag.find_all('a')
+    for a in a_tags:
+        if 'href' in a.attrs:
+            heading_ids[a['href']] = True
+
+    for li in ul_tag.find_all('li', recursive=False):
+        for child in li.children:
+            sub_index = list()
+            if child.name == 'a' and 'href' in child.attrs:
+                # Filter the tags to match the desired conditions
+                href = child['href'].lstrip("#")
+                if href=="Cancel Online Bill Pay":
+                    print("here")
+                print("HREF------------> {}".format(href))
+                start_tag = next(
+                    (tag for tag in all_a_tags if tag.get('id') == href or tag.get('name') == href), None)
+                if start_tag:
+                    all_a_tags.remove(start_tag)
+                    sub_index = collect_intermediate_tags(soup_obj, start_tag, heading_ids, tag_to_collect="ul")
+            elif child.name == 'ul':
+                # Recursively call expand_toc for the nested <ul> tag
+                sub_index = expand_toc(child, soup_obj, heading_ids,all_a_tags)
+            if sub_index and sub_index!=child:
+                sub_index = clean_sub_index(sub_index)
+                if isinstance(sub_index, Tag) and sub_index.name == "ul" and len(list(sub_index.children))>=1:
+                    child.insert_after(sub_index)
+                    print(sub_index)
+    return ul_tag
+
+async def extract_toc(soup_obj):
+    index_tags = ['ul']
+    toc_html_queue = list()
+    final_toc_html = list()
+    for tag in index_tags:
+        toc_html_queue.append(soup_obj.find(tag))
+
+    for toc_html in toc_html_queue:
+        final_toc_html.append(expand_toc(toc_html, soup_obj))
+    return final_toc_html
+
+async def extract_toc_old (soup_obj):
     index_tags = ['ul']
     toc_html = list()
     for tag in index_tags:
@@ -137,7 +271,7 @@ async def get_llm_response(content, instruction_msg):
                            timeout=timeout)
     print('**Open AI Request {}'.format(request_payload))
     start_time = time.time()
-    completion = await openai_client.chat.completions.create(**request_payload)
+    completion =  await openai_client.chat.completions.create(**request_payload)
     openai_response_handler = OpenaiResponseHandler(completion)
 
     completion_json_format = openai_response_handler.get_json_format()
@@ -163,37 +297,7 @@ async def fetch_lookup_from_llm_response(llm_response,toc_html):
     return lookup_with_id, heading_ids
 
 
-def check_tag(tag, heading_ids):
-    if tag.name == "a" and heading_ids.get("#" + str(tag.get("id", ""))):
-        return True
 
-    for child in tag.children:
-        if hasattr(child, 'children'):  # Ensure the child is a tag and not a string or comment
-            if(check_tag(child, heading_ids)):
-                print(f"Found a match inside : {tag}")
-                return check_tag(child, heading_ids)
-    return False
-def collect_intermediate_tags(soup, start_tag, heading_ids):
-    current_tag = start_tag
-    intermediate_tags = ""
-    current_tag = current_tag.find_next()
-    # Navigate through the document from start_tag to end_tag
-    while current_tag:
-        if check_tag(current_tag, heading_ids):
-            break
-        if current_tag.parent and current_tag.parent.get("added_as_content"):
-            print("Content already added")
-        else:
-            intermediate_tags += str(current_tag)
-            next_sibling = copy.deepcopy(current_tag.next_sibling)
-            while(next_sibling):
-                if isinstance(next_sibling, NavigableString):
-                    intermediate_tags += str(next_sibling)
-                next_sibling = next_sibling.next_sibling
-        #Check for text tags
-        current_tag['added_as_content'] = True
-        current_tag = current_tag.find_next()
-    return intermediate_tags
 def extract_chunks_using_heading_id(soup, lookup_table,  heading_ids):
     chunks = list()
     for key, item in lookup_table.items():
@@ -206,10 +310,13 @@ def extract_chunks_using_heading_id(soup, lookup_table,  heading_ids):
                 parent = anchor_tag.parent
                 if parent:
                     # Replace the entire text of the parent element with new value
-                    content_html = collect_intermediate_tags(soup, anchor_tag,heading_ids)
-                    # content_html = str(content) for content in content_html
+                    content_html = collect_intermediate_tags(soup, anchor_tag, heading_ids)
+                    content_html_string = str(content_html)
                     # parent.string = new_value
-                    chunks.append(dict(heading = new_value, content = content_html))
+                    chunks.append(dict(heading = new_value, content = content_html_string))
+    if len(chunks)==0:
+        content_html_string = str(soup)
+        chunks.append(dict(heading="", content=content_html_string))
     return chunks
 
 def split_into_chunks(text, heading_start, heading_end):
@@ -229,9 +336,11 @@ def split_into_chunks(text, heading_start, heading_end):
 async def convert_to_SA_format(chunks, **kwargs):
     data_list = list()
     for chunk in chunks:
+        title = chunk.get("heading")
         data = {
-            "title" : chunk.get("heading", kwargs.get("filename","")),
+            "title" : chunk.get("heading") or kwargs.get("filename", ""),
             "content": chunk.get("content"),
+            "content_markdown" : chunk.get("content_markdown"),
             "url": kwargs.get("url",""),
             "meta_data":kwargs.get("meta_data",{}),
             "doc_name" : kwargs.get("filename","")
@@ -241,7 +350,7 @@ async def convert_to_SA_format(chunks, **kwargs):
 def convert_chunks_to_markdown(chunks):
     for chunk in chunks:
         if chunk.get("content",""):
-            chunk['content'] = md(chunk.get('content'))
+            chunk['content_markdown'] = md(chunk.get('content'))
     return chunks
 async def extract_chunks(input_html, **kwargs):
     soup =  BeautifulSoup(input_html, 'html.parser')
@@ -251,7 +360,8 @@ async def extract_chunks(input_html, **kwargs):
     #     tag.decompose()
 
     #Identify and Extract ToC for the index
-    toc_html = await extract_toc(soup)
+    soup_for_toc = copy.deepcopy(soup)
+    toc_html = await extract_toc(soup_for_toc)
     index_html_as_string = [str(toc) for toc in toc_html]
     index_as_markdown = md("\n".join(index_html_as_string))
     #Make LLM call using the above html to get a lookup table of headings-> hierarchical heading - make this configurable to support any model with/without proxy
@@ -259,7 +369,7 @@ async def extract_chunks(input_html, **kwargs):
     index_lookup_table, heading_ids = await fetch_lookup_from_llm_response(llm_response, toc_html)
     print(index_lookup_table)
     #Enrich the page html using the lookup table from the LLM response and breakdown the document into chunks
-    extracted_chunks = extract_chunks_using_heading_id(soup,index_lookup_table,heading_ids)
+    extracted_chunks = extract_chunks_using_heading_id(soup,index_lookup_table, heading_ids)
     markdown_chunks = convert_chunks_to_markdown(extracted_chunks)
     # Split the html into chunk if failed to extract using the above approach
     # chunks = split_into_chunks(html_as_markdown, heading_start, heading_end)
@@ -296,7 +406,7 @@ async def helper(input_directory_path, output_directory_path):
         input_html = await parse_html(html_input_file_path)
         if input_html:
             kwargs = dict()
-            kwargs['filename'] = filename.rstrip(".html")
+            kwargs['filename'] = filename.removesuffix('.html')
             json_output = await extract_chunks(input_html,**kwargs)
             output_file_path = os.path.join(output_directory_path, f"{os.path.splitext(filename)[0]}_chunks.json")
             # Save the JSON output asynchronously
