@@ -1,7 +1,7 @@
 
 # Solving Document Structure Issues for Knowledge Extraction Using LLMs
 
-When working with knowledge extraction from document repositories, we often encounter challenges related to the structure and organization of the content. In this article, we'll discuss a real-world scenario where our client, PNC, faced two specific problems while using a searchassist platform to retrieve answers from Salesforce knowledge articles.
+When working with knowledge extraction from document repositories, we often encounter challenges related to the structure and organization of the content. In this article, we'll discuss a real-world scenario where our large banking client, faced two specific problems while using a searchassist platform to retrieve answers from Salesforce knowledge articles.
 
 ## The Challenges
 
