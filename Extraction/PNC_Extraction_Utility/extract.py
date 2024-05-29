@@ -9,6 +9,8 @@ import os
 import json
 import time
 import re
+import traceback
+
 import aiofiles
 from bs4 import BeautifulSoup, Tag
 from markdownify import markdownify as md
@@ -79,21 +81,6 @@ async def parse_json(file_path):
                     html_string += item.get("value")
     return html_string
 
-async def collect_intermediate_tocs(soup, current_id, subsequent_ids):
-    # Find the <a> tag with the given id or name
-
-
-    # Create a new <div> to hold the intermediate TOCs
-    intermediate_ids = []
-    next_sibling = current_a_tag.find_next_sibling()
-
-    while next_sibling:
-        if next_sibling.name == 'ul':
-            intermediate_ids.append(next_sibling)
-        elif next_sibling.name == 'a' and (next_sibling.get('id') in subsequent_ids or next_sibling.get('name') in subsequent_ids):
-            break
-        next_sibling = next_sibling.find_next_sibling()
-    return intermediate_ids
 
 def check_tag(tag, heading_ids):
     if tag.name == "a" and heading_ids.get("#" + str(tag.get("id", tag.get("name", "")))):
@@ -102,11 +89,11 @@ def check_tag(tag, heading_ids):
     for child in tag.children:
         if hasattr(child, 'children'):  # Ensure the child is a tag and not a string or comment
             if(check_tag(child, heading_ids)):
-                print(f"Found a match inside : {tag}")
+                # print(f"Found a match inside : {tag}")
                 return True
     return False
 def collect_intermediate_tags(soup, start_tag, heading_ids, tag_to_collect = None):
-    print("Collecting Intermediate Tags starting from {}".format(start_tag))
+    # print("Collecting Intermediate Tags starting from {}".format(start_tag))
     current_tag = start_tag
     intermediate_tags = BeautifulSoup("", "html.parser")
     next_tag = current_tag.next_element
@@ -123,7 +110,7 @@ def collect_intermediate_tags(soup, start_tag, heading_ids, tag_to_collect = Non
     # Navigate through the document from start_tag to end_tag
     while current_tag:
         if check_tag(current_tag, heading_ids):
-            print("Found the ending tag inside {}".format(current_tag))
+            # print("Found the ending tag inside {}".format(current_tag))
             break
         if current_tag.parent and current_tag.parent.get("added_as_content"):
             pass
@@ -183,9 +170,6 @@ def expand_toc(ul_tag, soup_obj, heading_ids = None, all_a_tags = None):
             if child.name == 'a' and 'href' in child.attrs:
                 # Filter the tags to match the desired conditions
                 href = child['href'].lstrip("#")
-                if href=="Cancel Online Bill Pay":
-                    print("here")
-                print("HREF------------> {}".format(href))
                 start_tag = next(
                     (tag for tag in all_a_tags if tag.get('id') == href or tag.get('name') == href), None)
                 if start_tag:
@@ -198,18 +182,22 @@ def expand_toc(ul_tag, soup_obj, heading_ids = None, all_a_tags = None):
                 sub_index = clean_sub_index(sub_index)
                 if isinstance(sub_index, Tag) and sub_index.name == "ul" and len(list(sub_index.children))>=1:
                     child.insert_after(sub_index)
-                    print(sub_index)
+                    # print(sub_index)
     return ul_tag
 
-async def extract_toc(soup_obj):
-    index_tags = ['ul']
-    toc_html_queue = list()
-    final_toc_html = list()
-    for tag in index_tags:
-        toc_html_queue.append(soup_obj.find(tag))
-
-    for toc_html in toc_html_queue:
-        final_toc_html.append(expand_toc(toc_html, soup_obj))
+async def extract_toc(soup_obj, **kwargs):
+    try:
+        index_tags = ['ul']
+        toc_html_queue = list()
+        final_toc_html = list()
+        for tag in index_tags:
+            toc_html_queue.append(soup_obj.find(tag))
+        for toc_html in toc_html_queue:
+            final_toc_html.append(expand_toc(toc_html, soup_obj))
+    except Exception as e:
+        print("Error in extracting TOC for the file : {}".format(kwargs.get("filename","")))
+        print(traceback.format_exc())
+        final_toc_html = list()
     return final_toc_html
 
 async def extract_toc_old (soup_obj):
@@ -252,69 +240,87 @@ class OpenaiResponseHandler:
 
 
 async def get_llm_response(content, instruction_msg):
-    curr_prompt = copy.deepcopy(prompt_json)
-    content_template = curr_prompt[0].get("content","")
-    content_template =content_template.replace("{{instruction_msg}}",instruction_msg).replace("{{content}}",content)
-    curr_prompt[0]["content"] = content_template
-    model = open_ai_conf.get("model")
-    timeout = open_ai_conf.get("timeout")
-    max_tokens = open_ai_conf.get("max_tokens")
-    temperature = open_ai_conf.get("temperature")
-    top_p = open_ai_conf.get("top_p")
-    request_payload = dict(model=model,
-                           messages=curr_prompt,
-                           temperature=temperature,
-                           max_tokens=max_tokens,
-                           top_p=top_p,
-                           frequency_penalty=open_ai_conf.get('frequency_penalty', 0),
-                           presence_penalty=open_ai_conf.get('presence_penalty', 0),
-                           timeout=timeout)
-    print('**Open AI Request {}'.format(request_payload))
-    start_time = time.time()
-    completion =  await openai_client.chat.completions.create(**request_payload)
-    openai_response_handler = OpenaiResponseHandler(completion)
-
-    completion_json_format = openai_response_handler.get_json_format()
-    print("Time taken in one OpenAI call {}".format(time.time()-start_time))
-    print('**Open Ai Response** {}'.format(completion_json_format))
+    try:
+        if not content:
+           raise Exception("Empty TOC encountered")
+        curr_prompt = copy.deepcopy(prompt_json)
+        content_template = curr_prompt[0].get("content","")
+        content_template =content_template.replace("{{instruction_msg}}",instruction_msg).replace("{{content}}",content)
+        curr_prompt[0]["content"] = content_template
+        model = open_ai_conf.get("model")
+        timeout = open_ai_conf.get("timeout")
+        max_tokens = open_ai_conf.get("max_tokens")
+        temperature = open_ai_conf.get("temperature")
+        top_p = open_ai_conf.get("top_p")
+        request_payload = dict(model=model,
+                               messages=curr_prompt,
+                               temperature=temperature,
+                               max_tokens=max_tokens,
+                               top_p=top_p,
+                               frequency_penalty=open_ai_conf.get('frequency_penalty', 0),
+                               presence_penalty=open_ai_conf.get('presence_penalty', 0),
+                               timeout=timeout)
+        print('**Open AI Request {}'.format(request_payload))
+        start_time = time.time()
+        completion =  await openai_client.chat.completions.create(**request_payload)
+        openai_response_handler = OpenaiResponseHandler(completion)
+        completion_json_format = openai_response_handler.get_json_format()
+        print("Time taken in one OpenAI call {}".format(time.time()-start_time))
+        print('**Open Ai Response** {}'.format(completion_json_format))
+    except Exception as e:
+        print("Error in fetching LLM response, falling back to empty llm response")
+        print(traceback.format_exc())
+        completion_json_format = {}
     return completion_json_format
 
-async def fetch_lookup_from_llm_response(llm_response,toc_html):
-    lookup_string = llm_response.get("choices",[])[0].get("message",{}).get("content","")
-    lookup_json = json.loads(lookup_string)
-    lookup_with_id = dict()
-    heading_ids = dict()
-    #list of tocs, usually single
-    for key, value in lookup_json.items():
-        if lookup_with_id.get(key) is None:
-            for toc in toc_html:
-                anchor_tag = toc.find(common_index_tag, string=key)
-                if anchor_tag:
-                    heading_id =anchor_tag['href']
-                    lookup_with_id[key] = dict(value = lookup_json[key], heading_id = heading_id)
-                    heading_ids[heading_id] = True
+async def fetch_lookup_from_llm_response(llm_response,toc_html, **kwargs):
+    try :
+        lookup_with_id = dict()
+        heading_ids = dict()
+        lookup_string = llm_response.get("choices",[])[0].get("message",{}).get("content","")
+        lookup_json = json.loads(lookup_string)
+        #list of tocs, usually single
+        for key, value in lookup_json.items():
+            if lookup_with_id.get(key) is None:
+                for toc in toc_html:
+                    anchor_tag = toc.find(common_index_tag, string=key)
+                    if anchor_tag:
+                        heading_id =anchor_tag['href']
+                        lookup_with_id[key] = dict(value = lookup_json[key], heading_id = heading_id)
+                        heading_ids[heading_id] = True
+    except Exception as e:
+        lookup_with_id = dict()
+        heading_ids = dict()
+        print("Error in Creating Lookup from LLM response for {}, sending empty lookup".format(kwargs.get("filename")))
+        print(traceback.format_exc())
     # stripped_lowercased_lookup = {key.strip().lower(): value for key, value in lookup_json.items()}
     return lookup_with_id, heading_ids
 
 
 
-def extract_chunks_using_heading_id(soup, lookup_table,  heading_ids):
-    chunks = list()
-    for key, item in lookup_table.items():
-        if type(item)==dict:
-            heading_id = item['heading_id'].lstrip('#')  # Remove the leading '#' for id lookup
-            new_value = item['value']
-            # Find the anchor tag with the specified id
-            anchor_tag = soup.find('a', id=heading_id)
-            if anchor_tag:
-                parent = anchor_tag.parent
-                if parent:
-                    # Replace the entire text of the parent element with new value
-                    content_html = collect_intermediate_tags(soup, anchor_tag, heading_ids)
-                    content_html_string = str(content_html)
-                    # parent.string = new_value
-                    chunks.append(dict(heading = new_value, content = content_html_string))
+def extract_chunks_using_heading_id(soup, lookup_table,  heading_ids, **kwargs):
+    try:
+        chunks = list()
+        for key, item in lookup_table.items():
+            if type(item)==dict:
+                heading_id = item['heading_id'].lstrip('#')  # Remove the leading '#' for id lookup
+                new_value = item['value']
+                # Find the anchor tag with the specified id
+                anchor_tag = soup.find('a', id=heading_id)
+                if anchor_tag:
+                    parent = anchor_tag.parent
+                    if parent:
+                        # Replace the entire text of the parent element with new value
+                        content_html = collect_intermediate_tags(soup, anchor_tag, heading_ids)
+                        content_html_string = str(content_html)
+                        # parent.string = new_value
+                        chunks.append(dict(heading = new_value, content = content_html_string))
+    except Exception as e:
+        print("Error in Extracting Chunks based on the given lookup table {} for {}".format(lookup_table, kwargs.get("filename","")))
+        print(traceback.format_exc())
+        chunks = list()
     if len(chunks)==0:
+        print("No chunks extracted, sending whole html as a chunk")
         content_html_string = str(soup)
         chunks.append(dict(heading="", content=content_html_string))
     return chunks
@@ -353,27 +359,25 @@ def convert_chunks_to_markdown(chunks):
             chunk['content_markdown'] = md(chunk.get('content'))
     return chunks
 async def extract_chunks(input_html, **kwargs):
-    soup =  BeautifulSoup(input_html, 'html.parser')
-
-    #  Clean the html before sending to LLM
-    # for tag in soup(["script", "style", "header", "footer"]):
-    #     tag.decompose()
-
-    #Identify and Extract ToC for the index
-    soup_for_toc = copy.deepcopy(soup)
-    toc_html = await extract_toc(soup_for_toc)
-    index_html_as_string = [str(toc) for toc in toc_html]
-    index_as_markdown = md("\n".join(index_html_as_string))
-    #Make LLM call using the above html to get a lookup table of headings-> hierarchical heading - make this configurable to support any model with/without proxy
-    llm_response = await get_llm_response(index_as_markdown, instruction_msg)
-    index_lookup_table, heading_ids = await fetch_lookup_from_llm_response(llm_response, toc_html)
-    print(index_lookup_table)
-    #Enrich the page html using the lookup table from the LLM response and breakdown the document into chunks
-    extracted_chunks = extract_chunks_using_heading_id(soup,index_lookup_table, heading_ids)
-    markdown_chunks = convert_chunks_to_markdown(extracted_chunks)
-    # Split the html into chunk if failed to extract using the above approach
-    # chunks = split_into_chunks(html_as_markdown, heading_start, heading_end)
-    sa_structured_data = await convert_to_SA_format(markdown_chunks, **kwargs)
+    try:
+        soup =  BeautifulSoup(input_html, 'html.parser')
+        soup_for_toc = copy.deepcopy(soup)
+        toc_html = await extract_toc(soup_for_toc, **kwargs)
+        index_html_as_string = [str(toc) for toc in toc_html]
+        index_as_markdown = md("\n".join(index_html_as_string))
+        #Make LLM call using the above html to get a lookup table of headings-> hierarchical heading - make this configurable to support any model with/without proxy
+        llm_response = await get_llm_response(index_as_markdown, instruction_msg)
+        index_lookup_table, heading_ids = await fetch_lookup_from_llm_response(llm_response, toc_html, **kwargs)
+        #Enrich the page html using the lookup table from the LLM response and breakdown the document into chunks
+        extracted_chunks = extract_chunks_using_heading_id(soup,index_lookup_table, heading_ids, **kwargs)
+        markdown_chunks = convert_chunks_to_markdown(extracted_chunks)
+        # Split the html into chunk if failed to extract using the above approach
+        # chunks = split_into_chunks(html_as_markdown, heading_start, heading_end)
+        sa_structured_data = await convert_to_SA_format(markdown_chunks, **kwargs)
+    except Exception as e:
+        print("Error in extracting Chunks for the given file : {}. Sending empty data".format(kwargs.get("filename")))
+        print(traceback.format_exc())
+        sa_structured_data = list()
     return sa_structured_data
 
 async def save_json(output_file_path, json_output):
@@ -407,6 +411,7 @@ async def helper(input_directory_path, output_directory_path):
         if input_html:
             kwargs = dict()
             kwargs['filename'] = filename.removesuffix('.html')
+            print(f'Staring Extraction for {filename}')
             json_output = await extract_chunks(input_html,**kwargs)
             output_file_path = os.path.join(output_directory_path, f"{os.path.splitext(filename)[0]}_chunks.json")
             # Save the JSON output asynchronously
