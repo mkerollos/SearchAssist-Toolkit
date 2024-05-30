@@ -140,7 +140,7 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, comp
             llmAnswer['data'][0]["isPresentedAnswer"] = true;
             llmAnswer['data'][0]["message"] = "Presented Answer";
             llmAnswer['data'][0]["score"] = "0%";
-            llmAnswer['data'][0]["timeTaken"] = `${completion_time}ms`;
+            llmAnswer['data'][0]["timeTaken"] = `${completion_time} ms`;
 
             let result_data = llmAnswer['data'][0];
             result_data['title'] = "";
@@ -315,7 +315,7 @@ function formAnswerDebugPayload(answerConfigs, prompt, completion_time, prompt_t
     const populateMoreInfo = (key, value) => {
         debug_payload_info.llmResponse.responseDetails.moreInfo.push({ key, value });
     };
-    debug_payload_info.llmResponse.responseTime.moreInfo.push({ key: 'Completion Time', value: completion_time});
+    // debug_payload_info.llmResponse.responseTime.moreInfo.push({ key: 'Completion Time', value: completion_time/1000});
     debug_payload_info.llmResponse.responseDetails.completionText.answer = ans;
 
     const regexPattern = /chk-[a-zA-Z0-9-]+/g;

@@ -31,7 +31,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
         },
       });
       const endTime = new Date();
-      let completion_time = (endTime - startTime) / 1000;
+      let completion_time = endTime - startTime;
 
       const kwargs = await helperService.getContextArrayChunks(prompt, chunksSentToLLM);
       const chunkIdMap = kwargs.chunk_id_map;
@@ -80,7 +80,7 @@ const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
         },
       });
       const endTime = new Date();
-      let completion_time = (endTime - startTime) / 1000;
+      let completion_time = endTime - startTime;
 
       const kwargs = await helperService.getContextArrayChunks(prompt, chunksSentToLLM);
       const chunkIdMap = kwargs.chunk_id_map;
