@@ -26,7 +26,7 @@ This utility takes a excel file (Query,GroundTruth) as an input along with searc
 
 
 
-## Refrence Link
+## Reference Link
 
 [RAGAS](https://docs.ragas.io/en/latest/index.html)
 [DeepEval](https://docs.confident-ai.com)
