@@ -54,7 +54,7 @@ To extract meaningful chunks of content, we iterate through the modified HTML do
 By leveraging the LLM's capabilities to understand and expand the hierarchical structure of the headers, and subsequently preprocessing the documents with explicit parent-child relationships, we provided the necessary context for accurate knowledge extraction.
 
 ### Implementation and Open-Source Contribution
-The implementation of this solution is available as an open-source project on GitHub: [SearchAssist-Toolkit](https://github.com/username/SearchAssist-Toolkit). We believe that sharing this approach and code can benefit the broader community working with knowledge extraction and document understanding.
+The implementation of this solution is available as an open-source project on GitHub: [SearchAssist-Toolkit](https://github.com/Koredotcom/SearchAssist-Toolkit/tree/master/Extraction/PNC_Extraction_Utility). We believe that sharing this approach and code can benefit the broader community working with knowledge extraction and document understanding.
 
 ### Conclusion
 Dealing with complex document structures and hierarchies can be a significant challenge when extracting knowledge. By leveraging the LLM's capabilities to understand and expand the hierarchical structure, and incorporating explicit parent-child relationships through preprocessing, we can provide the necessary context and significantly improve the accuracy of the extracted information. 
