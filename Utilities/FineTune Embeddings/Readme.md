@@ -66,7 +66,7 @@ Default configuration will be set in the config.json file. If required, change t
 ```
 
 ### 6. Optional parameters
-Default configuration will be set in the config.json file. If required, change the parameters based on your needs.
+If you need to temporarily change a configuration, you can pass parameters while running the script, and these parameters will overwrite the default configuration.
 
 ```
 python FineTuneEmbedding.py --Model BAAI/bge-base-zh-v1.5 --Input_Folder Dataset --FineTunedModelPath Output --Train_Folder Train --Validation_Folder val --Validation_Split_Ratio 0.4
