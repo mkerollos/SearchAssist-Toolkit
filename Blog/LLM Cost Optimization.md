@@ -1,5 +1,5 @@
 
-# Unlocking Efficiency and Accuracy in E-commerce Customer Support with SearchAI RAG
+# SearchAI for Customer Support - Our Journey to Cost-Effective AI Solution
 
 ## Introduction
 
