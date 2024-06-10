@@ -34,10 +34,16 @@ cd SearchAssist-Toolkit/Utilities/FineTune\ Embeddings/
 ```
 pip install -r requirements.txt
 ```
-### 5. Set the OpenAI key in the terminal session.
+### 3. Set the OpenAI key in the terminal session.
 Replace the OpenAI key and run this command in the terminal to store the API key in the session.
+
+Linux
 ```
 export OPENAI_API_KEY=OPENAI_API_KEY
+```
+Windows
+```
+set OPENAI_API_KEY=OPENAI_API_KEY
 ```
 
 ### 4. Run the Script
