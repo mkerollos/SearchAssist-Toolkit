@@ -1,11 +1,18 @@
 
 # Unlocking Efficiency and Accuracy in E-commerce Customer Support with SearchAI RAG
 
-In the fast-paced realm of e-commerce, customer support efficiency can make or break a company's reputation. In our latest project, we deployed a SearchAI Retrieval-Augmented Generation (RAG) solution for a client to enhance their customer care agents' ability to provide accurate and timely answers using the rich information contained in their knowledge repository. This solution leverages generative AI to ensure precision in responses. However, while the accuracy of the model was impressive, the generative AI bill shot up. Here's a deep dive into our journey, challenges faced, and the solutions that led us to an optimal balance between cost-efficiency and accuracy.
+## Introduction
+
+In the rapidly evolving world of e-commerce, the efficiency of customer support can significantly impact a company's reputation. Our recent project involved deploying a SearchAI Retrieval-Augmented Generation (RAG) solution for a client. This solution was designed to enhance customer care agents' ability to deliver timely and accurate responses using the vast information from their knowledge repository. By leveraging generative AI, we aimed to maintain high precision in responses. However, despite the impressive accuracy of the model, we encountered a sharp increase in the generative AI operational costs. Here’s an in-depth look at our journey, the challenges we faced, and the solutions that helped us strike a balance between cost-efficiency and accuracy.
 
 ## The Challenge
 
-Our goal was to handle an expected load of 500 million requests per year, or approximately 40 million requests per month. The core use case was straightforward: whenever a customer posed a question to an agent, the SearchAI system would automatically fetch the most relevant answers from a pre-ingested knowledge base.
+Our target was to handle an anticipated load of 500 million requests per year, approximately translating to 40 million requests per month. The financial implications were daunting—the annual bill for the large language model (LLM) reached a staggering $2 million. This presented a significant challenge for our client. While we had succeeded in improving the accuracy of customer support, the operational costs had become unsustainable. We needed to find a solution that balanced cost-efficiency without compromising the accuracy offered by the generative AI. Here’s how we approached and tackled this complex issue.
+
+## Initial Implementation
+
+The primary use case was quite straightforward: whenever a customer asked a question to an agent, the SearchAI system would automatically retrieve the most relevant answers from a pre-ingested knowledge base. Our initial setup involved segmenting knowledge articles into HTML chunks and processing these chunks through GPT-3.5-turbo-16k, as it supported the required token limit (approximately 6500 tokens per query). This method achieved an impressive answer accuracy rate of 80%.
+
 
 ## Technical Blueprint
 
