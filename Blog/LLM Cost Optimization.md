@@ -99,6 +99,7 @@ Through robust analysis, the most effective solutions in terms of retrieval accu
    - *Pros*: Decent accuracy, fewer chunks needed.
    - *Cons*: Larger chunks may lose context, expensive OpenAI usage.
 
+![Optimisation Approaches](https://raw.githubusercontent.com/Koredotcom/SearchAssist-Toolkit/master/Blog/Assets/CostOptimizationComparison.png)
 ## The Optimal Solution
 
 While OpenAI solutions offered higher retrieval accuracy, they were cost-prohibitive. The finetuned BGE model struck an optimal balance, yielding a retrieval accuracy of 56.8% at significantly reduced costs. This was achieved by:
@@ -107,6 +108,7 @@ While OpenAI solutions offered higher retrieval accuracy, they were cost-prohibi
 - Using the finetuned BGE model for embeddings.
 - Employing a chunk size of 200 with 8 chunks per LLM call.
 
+![The Optimal Solution](https://raw.githubusercontent.com/Koredotcom/SearchAssist-Toolkit/master/Blog/Assets/CostOptimizationPlots.png)
 ## Conclusion
 
 By adopting the Clean Text with Finetuned BGE model approach, we managed to cut costs dramatically while maintaining satisfactory retrieval accuracy. This solution not only exemplifies the power of fine-tuning but also highlights the importance of thorough analysis and strategic adjustments in building cost-efficient, high-performing systems.
