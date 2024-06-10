@@ -65,6 +65,9 @@ Default configuration will be set in the config.json file. If required, change t
 }
 ```
 
+| Note     | Validation_Split_Ratio must be set between 0.1 and 0.9. |
+|------------------|-----------------------|
+
 ### 6. Optional parameters
 If you need to temporarily change a configuration, you can pass parameters while running the script, and these parameters will overwrite the default configuration.
 

@@ -37,7 +37,7 @@ FineTunedModelPath = config['FineTunedModelPath']
 Input_Folder = config['Input_Folder']
 Train_Folder = config['Train_Folder']
 Validation_Folder = config['Validation_Folder']
-Validation_Split_Ratio= config['Validation_Split_Ratio']
+Validation_Split_Ratio= float(config['Validation_Split_Ratio'])
 
 def main():
     global Model, FineTunedModelPath, Input_Folder, Train_Folder, Validation_Folder,Validation_Split_Ratio
@@ -56,7 +56,7 @@ def main():
     Input_Folder = args.Input_Folder
     Train_Folder = "./" + args.Train_Folder
     Validation_Folder = "./" + args.Validation_Folder
-    Validation_Split_Ratio = args.Validation_Split_Ratio
+    Validation_Split_Ratio = float(args.Validation_Split_Ratio)
 
 
 def data_file_found(file_path):
@@ -108,7 +108,7 @@ def xls_to_pdf(excel_file):
         content.append(create_paragraph(f"Expected_Ans: {expected_ans}"))
         pdf.build(content)
     
-    print("PDF files have been created successfully in the 'train' folder.")
+    # print("PDF files have been created successfully in the 'train' folder.")
 
 def Check_Csv_xlsx():
     print(Train_Folder)
@@ -131,8 +131,10 @@ def move_30_percent_to_validation(Train_Folder, Validation_Folder):
         print("There was only one file, and it has been moved to the 'validation' folder.")
         return
     random.shuffle(pdf_files)
-    print("Validation Ratio: " + str(Validation_Split_Ratio))
-    num_files_to_move = int(len(pdf_files) * float(Validation_Split_Ratio))
+    if Validation_Split_Ratio == 1 or Validation_Split_Ratio > 1 or Validation_Split_Ratio == 0:
+        print("Invalid split parameter. Please provide a value between 0.1 and 0.9.")
+        exit()
+    num_files_to_move = int(len(pdf_files) * Validation_Split_Ratio)
     files_to_move = pdf_files[:num_files_to_move]
     for file in files_to_move:
         src = os.path.join(Train_Folder, file)
