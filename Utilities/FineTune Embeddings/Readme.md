@@ -49,12 +49,27 @@ set OPENAI_API_KEY=OPENAI_API_KEY
 ### 4. Run the Script
 
 ```
-python FineTuneEmbedding.py --Model BAAI/bge-base-zh-v1.5
+python FineTuneEmbedding.py 
 ```
-### 5. Optional parameters
+
+ ### 5. Configuration
+Default configuration will be set in the config.json file. If required, change the parameters based on your needs.
+```
+{
+    "Model":"BAAI/bge-base-zh-v1.5",
+    "FineTunedModelPath":"FineTunedModel",
+    "Input_Folder":"Data",
+    "Train_Folder":"Train",
+    "Validation_Folder":"Validation",
+    "Validation_Split_Ratio":0.3
+}
+```
+
+### 6. Optional parameters
+Default configuration will be set in the config.json file. If required, change the parameters based on your needs.
 
 ```
-python FineTuneEmbedding.py --Model BAAI/bge-base-zh-v1.5 --Input_Folder Dataset --FineTunedModelPath Output --Train_Folder Train --Validation_Folder val
+python FineTuneEmbedding.py --Model BAAI/bge-base-zh-v1.5 --Input_Folder Dataset --FineTunedModelPath Output --Train_Folder Train --Validation_Folder val --Validation_Split_Ratio 0.4
 ```
 
 
@@ -62,11 +77,12 @@ python FineTuneEmbedding.py --Model BAAI/bge-base-zh-v1.5 --Input_Folder Dataset
 
 | Arguments                | Description               | Requirement | Default           |
 |--------------------------|---------------------------|-------------|-------------------|
-| `--Model`                | Model ID                  | Mandatory   |                   |
+| `--Model`                | Model ID                  | Optional   |     BAAI/bge-base-zh-v1.5              |
 | `--Input_Folder`         | Input Folder Path         | Optional    | Data              |
 | `--FineTunedModelPath`   | Output Path               | Optional    | FineTunedModel    |
 | `--Train_Folder`         | Training Folder Name      | Optional    | Train             |
 | `--Validation_Folder`    | Validation Folder Name    | Optional    | Validation        |
+| `--Validation_Split_Ratio`    | Validation Split Ratio    | Optional    | 0.3         |
 
 
 

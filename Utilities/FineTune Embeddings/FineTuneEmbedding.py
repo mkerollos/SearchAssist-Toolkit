@@ -26,22 +26,29 @@ import glob
 import math
 import html
 import argparse
+import json
 
-Model = None
-FineTunedModelPath = None
-Input_Folder = "Data"
-Train_Folder = "Train"
-Validation_Folder = "Validation"
+
+with open('./Config.json', 'r') as configfile:
+    config = json.load(configfile)
+
+Model = config['Model']
+FineTunedModelPath = config['FineTunedModelPath']
+Input_Folder = config['Input_Folder']
+Train_Folder = config['Train_Folder']
+Validation_Folder = config['Validation_Folder']
+Validation_Split_Ratio= config['Validation_Split_Ratio']
 
 def main():
-    global Model, FineTunedModelPath, Input_Folder, Train_Folder, Validation_Folder
+    global Model, FineTunedModelPath, Input_Folder, Train_Folder, Validation_Folder,Validation_Split_Ratio
     
     parser = argparse.ArgumentParser(description="Assign multiple values to multiple variables.")
-    parser.add_argument("--Model", default="BAAI/bge-base-zh-v1.5", help="Model Id")
-    parser.add_argument("--FineTunedModelPath", default="FineTunedModel", help="Output")
-    parser.add_argument("--Input_Folder", default="Data", help="Input")
-    parser.add_argument("--Train_Folder", default="Train", help="Training Folder")
-    parser.add_argument("--Validation_Folder", default="Validation", help="Validation Folder")
+    parser.add_argument("--Model", default=Model, help="Model Id")
+    parser.add_argument("--FineTunedModelPath", default=FineTunedModelPath, help="Output")
+    parser.add_argument("--Input_Folder", default=Input_Folder , help="Input")
+    parser.add_argument("--Train_Folder", default=Train_Folder, help="Training Folder")
+    parser.add_argument("--Validation_Folder", default=Validation_Folder, help="Validation Folder")
+    parser.add_argument("--Validation_Split_Ratio", default=Validation_Split_Ratio ,help="Validation_Split_Ratio")
     
     args = parser.parse_args()
     Model = args.Model
@@ -49,6 +56,7 @@ def main():
     Input_Folder = args.Input_Folder
     Train_Folder = "./" + args.Train_Folder
     Validation_Folder = "./" + args.Validation_Folder
+    Validation_Split_Ratio = args.Validation_Split_Ratio
 
 
 def data_file_found(file_path):
@@ -123,7 +131,8 @@ def move_30_percent_to_validation(Train_Folder, Validation_Folder):
         print("There was only one file, and it has been moved to the 'validation' folder.")
         return
     random.shuffle(pdf_files)
-    num_files_to_move = int(len(pdf_files) * 0.3)
+    print("Validation Ratio: " + str(Validation_Split_Ratio))
+    num_files_to_move = int(len(pdf_files) * float(Validation_Split_Ratio))
     files_to_move = pdf_files[:num_files_to_move]
     for file in files_to_move:
         src = os.path.join(Train_Folder, file)
@@ -185,6 +194,10 @@ def evaluate_st(
     return evaluator(model, output_path=output_path,)
 
 def training():
+    if os.path.exists(Train_Folder):
+        shutil.rmtree(Train_Folder)
+    if os.path.exists(Validation_Folder):
+        shutil.rmtree(Validation_Folder)
     os.makedirs(Train_Folder, exist_ok=True)
     os.makedirs(Validation_Folder, exist_ok=True)
     for filename in os.listdir(Input_Folder):

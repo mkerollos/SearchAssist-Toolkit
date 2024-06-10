@@ -1,0 +1,8 @@
+{
+    "Model":"BAAI/bge-base-zh-v1.5",
+    "FineTunedModelPath":"FineTunedModel",
+    "Input_Folder":"Data",
+    "Train_Folder":"Train",
+    "Validation_Folder":"Validation",
+    "Validation_Split_Ratio":0.3
+}
