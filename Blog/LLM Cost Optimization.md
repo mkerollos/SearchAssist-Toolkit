@@ -1,7 +1,7 @@
 
 # Unlocking Efficiency and Accuracy in E-commerce Customer Support with SearchAI RAG
 
-In the fast-paced realm of e-commerce, customer support efficiency can make or break a company's reputation. In our latest project, we deployed a SearchAI Retrieval-Augmented Generation (RAG) solution for a client to enhance their customer care agents' ability to provide accurate and timely answers using the rich information contained in their knowledge repository. Here's a deep dive into our journey, challenges faced, and the solutions that led us to an optimal balance between cost-efficiency and accuracy.
+In the fast-paced realm of e-commerce, customer support efficiency can make or break a company's reputation. In our latest project, we deployed a SearchAI Retrieval-Augmented Generation (RAG) solution for a client to enhance their customer care agents' ability to provide accurate and timely answers using the rich information contained in their knowledge repository. This solution leverages generative AI to ensure precision in responses. However, while the accuracy of the model was impressive, the generative AI bill shot up. Here's a deep dive into our journey, challenges faced, and the solutions that led us to an optimal balance between cost-efficiency and accuracy.
 
 ## The Challenge
 
