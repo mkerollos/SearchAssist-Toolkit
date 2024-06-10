@@ -31,11 +31,8 @@ flowchart LR
     A--> F[LLM]-->Answer
 ```
 
-## Initial Implementation and Challenges
 
-The key initial setup involved chunking knowledge articles in HTML format and feeding these chunks through GPT-3.5-turbo-16k, as it supported the required token budget (approximately 6500 tokens per query). This approach yielded an answering accuracy of 80%. However, the financial implications were staggering—the annual LLM bill soared to $2 million.
-
-## Improving Cost-Efficiency
+## The Solution Approaches
 
 To cut costs in half while maintaining accuracy, we needed to improve chunk retrieval precision and recall. Our retrieval evaluation utilized a test suite with a set of questions and a ranked list of relevant chunks, ensuring any enhancement could be rigorously validated.
 
