@@ -310,5 +310,216 @@ curl --location --request POST '{{protocol}}://{{hostname}}/searchassistAnswerin
 }'
 ```
 
+To prepare a GitHub README for integrating a new custom LLM, such as Claude, into the provided codebase, we need to outline the necessary steps and modifications. Below is a template for the README, detailing the integration process:
+
+---
+
+# Code changes needed to add any other Custom LLM
+
+This guide explains how to integrate a new custom LLM, such as Claude, into the existing codebase. The instructions assume familiarity with JavaScript, Node.js, and basic API integration principles.
+
+## Prerequisites
+
+- Node.js installed on your system.
+- Basic understanding of JavaScript and Express.js.
+- API keys and endpoint details for the custom LLM you wish to integrate (e.g., Claude).
+
+## Files to Modify
+
+1. **utilityController.js**
+2. **utilityRoutes.js**
+3. **Utility File (e.g., helper.js)**
+4. **Configuration File (e.g., answer.json)**
+
+## Steps to Integrate Claude
+
+### 1. Update the Configuration File
+
+Add the necessary configuration for Claude in your configuration file (e.g., `answer.json`).
+
+```json
+{
+    "ANSWERING_LLM": "claude",
+    "ANSWERING_TYPE": "Custom Integration",
+    "claude": {
+        "endpoint": "https://api.anthropic.com/v1/claude",
+        "apiKey": "YOUR_CLAUDE_API_KEY",
+        "prompt": [{
+            "role": "system",
+            "content": "You are an AI system responsible for generating answers..."
+        }],
+        "MODEL": "claude-v1",
+        "TEMPERATURE": 0.5,
+        "MAX_TOKENS": 512,
+        "TOP_P": 1,
+        "FREQUENCY_PENALTY": 0,
+        "PRESENCE_PENALTY": 0
+    }
+}
+```
+
+### 2. Modify utilityController.js
+
+Update `utilityController.js` to include the logic for handling Claude.
+
+```javascript
+const axios = require('axios');
+const helperService = require('../../utils/helper.js');
+const URITemplate = require('uri-templates');
+
+const answeringService = async (userQuery, answerConfig, chunksSentToLLM) => {
+    try {
+        let selectedLLM = answerConfig.ANSWERING_LLM;
+        let answeringType = answerConfig.ANSWERING_TYPE;
+        let resp;
+        let debug_payload_info = {};
+
+        //add only the if block - starts here
+        if (selectedLLM === "claude") {
+            let { prompt, endpoint, apiKey, MODEL, TEMPERATURE, MAX_TOKENS, TOP_P, FREQUENCY_PENALTY, PRESENCE_PENALTY } = answerConfig[selectedLLM];
+            prompt = await helperService.modifyPrompt(prompt, userQuery, chunksSentToLLM);
+
+            const requestData = {
+                "model": MODEL,
+                "messages": prompt,
+                "temperature": TEMPERATURE,
+                "max_tokens": MAX_TOKENS,
+                "top_p": TOP_P,
+                "frequency_penalty": FREQUENCY_PENALTY,
+                "presence_penalty": PRESENCE_PENALTY
+            }
+
+            const startTime = new Date();
+            const response = await axios.post(endpoint, requestData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                },
+            });
+            const endTime = new Date();
+            let completion_time = endTime - startTime;
+
+            const kwargs = await helperService.getContextArrayChunks(prompt, chunksSentToLLM);
+            const chunkIdMap = kwargs.chunk_id_map;
+
+            let more_info = response.data?.usage;
+            const prompt_tokens = more_info?.prompt_tokens || 0;
+            const completion_tokens = more_info?.completion_tokens || 0;
+            const total_tokens = more_info?.total_tokens || 0;
+
+            const answer = await helperService.generateAnswerFromOpenaiResponse(response.data, chunkIdMap, completion_time);
+            const generativeChunks = answer[2] || [];
+            let contentList = answer[1]?.data[0]?.snippet_content || [];
+            let ans = "";
+            contentList.forEach((content) => {
+                ans += content?.answer_fragment;
+            });
+
+            debug_payload_info = helperService.formAnswerDebugPayload(answerConfig[selectedLLM], prompt, completion_time, prompt_tokens, completion_tokens, total_tokens, ans, response.data, answeringType, generativeChunks);
+
+            resp = {
+                graph_answer: { "payload": { "center_panel": answer[1] } },
+                debug_payload: debug_payload_info
+            };
+        }
+        // ends here
+        return resp;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Error in making the public service call');
+    }
+};
+
+module.exports = {
+    answeringService,
+};
+```
+
+### 3. Update helper.js
+
+We have a code for response resolver here generateAnswerFromOpenaiResponse(). If it is reusable, ignore writing another function for resolving the custom LLM response.
+
+### 4. Update utilityRoutes.js
+
+Ensure the route handler can process requests for the new LLM.
+
+```javascript
+const express = require('express');
+const router = express.Router();
+const utilityController = require('../controllers/utilityController');
+const { predefinedRequestData, clientAuthToken, REQUEST_TIMEOUT } = require('../../constants/answerRequest');
+const base = require('../../base');
+const path = require('path');
+const fs = require('fs');
+const https = require('https');
+const bodyParser = require('body-parser');
+
+router.use(bodyParser.json({ limit: '50mb' }));
+router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+const authenticateToken = (req, res, next) => {
+    const authToken = req.headers['api-token'];
+    if (authToken === clientAuthToken) {
+        next();
+    } else {
+        res.status(403).json({ error: 'Unauthorized' });
+    }
+};
+
+router.post('/', authenticateToken, async (req, res) => {
+    try {
+        console.log("<========== Public Answering Service Request is received ==========>");
+        const userQuery = req.body?.searchResults?.template?.spellCorrectedQuery || req.body?.searchResults?.template?.originalQuery || req.body?.searchResults?.spellCorrectedQuery || predefinedRequestData.answer_hook_user_input.spellCorrectedQuery;
+        const chunksSentToLLM = req.body?.searchResults?.template?.chunk_result?.generative || req.body?.searchResults?.chunk_result?.generative || predefinedRequestData.answer_hook_user_input.template.chunk_result.generative;
+        const answerConfig = require(path.join(base.basePath, base.answerConfigPath));
+        const answeringServicePromise = utilityController.answeringService(userQuery, answerConfig, chunksSentToLLM);
+
+        const timeoutPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject(new Error('Request got timeout'));
+            }, REQUEST_TIMEOUT);
+        });
+
+        const result = await Promise.race([answeringServicePromise, timeoutPromise]);
+
+        res.json({ answer: result});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ Error: 'Error found while making the answering service call' });
+    }
+});
+
+module.exports = router;
+```
+
+## Testing the Integration
+
+1. **Install Dependencies**: Make sure all required dependencies are installed.
+   ```bash
+   npm install
+   ```
+
+2. **Run the Server**: Start your server to test the new LLM integration.
+   ```bash
+   node server.js
+   ```
+
+3. **Send a Test Request**: Use an API client (like Postman) to send a request to your endpoint and verify that the integration with Claude is working as expected.
+
+## Troubleshooting
+
+- Ensure all API keys and endpoints are correctly configured.
+- Check logs for detailed error messages.
+- Verify the structure of the API response matches the expected format.
+
+## Conclusion
+
+Following these steps will help you integrate a new custom LLM, such as Claude, into the existing codebase. Adjust the instructions as necessary to fit the specific requirements of the LLM you are integrating.
+
+---
+
+This README provides a structured approach to integrating a new custom LLM, ensuring that all necessary changes are clearly outlined and explained.
+
+
 ## Contributing
 Feel free to contribute to this project by adding the other answering LLM. Create a fork, make your changes, and submit a pull request.
