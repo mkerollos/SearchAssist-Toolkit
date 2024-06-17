@@ -15,12 +15,11 @@ Follow the steps below to set up and run the Salesforce Custom Extraction Utilit
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/Koredotcom/SearchAssist-Toolkit
-    ```
+    git clone https://github.com/Koredotcom/SearchAssist-Toolkit.git
 
 2. **Checkout to the Salesforce Custom Extraction Utility branch**:
     ```bash
-    git checkout salesforce-custom-extraction-utility
+    git checkout master
     ```
 
 3. **Navigate to the Salesforce Custom Extraction Utility directory**:
