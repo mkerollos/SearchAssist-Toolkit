@@ -3,13 +3,13 @@
 
 ## Introduction
 
-In the rapidly evolving world of e-commerce, the efficiency of customer support can significantly impact a company's reputation. Our recent project involved deploying a SearchAI Retrieval-Augmented Generation (RAG) solution for a client. This solution uses advanced language models to understand customer questions and provide relevant answers from our vast knowledge base. This cutting-edge technology allowed our customer service agents to deliver timely and precise responses, significantly improving the overall customer experience. 
+In the competitive world of e-commerce, efficient customer support is crucial for a company's reputation and customer retention. Our recent project involved deploying a cost-effective AI solution to improve this efficiency. Our recent project involved deploying a SearchAI Retrieval-Augmented Generation (RAG) solution for a client. This solution uses advanced language models to understand customer questions and provide relevant answers from our vast knowledge base. This cutting-edge technology allowed our customer service agents to deliver timely and precise responses, significantly improving the overall customer experience. 
 
 
 ## Initial Implementation
 
 To give you a better understanding of our initial setup, let me walk you through the process. Whenever a customer asked a question, the SearchAI system would automatically retrieve the most relevant answers from our pre-existing knowledge base. This knowledge base consisted of articles and documents that were segmented into smaller chunks of information, called HTML chunks.
-These HTML chunks were then processed through a powerful language model called GPT-3.5-turbo-16k, which had the capability to handle a large number of tokens (roughly equivalent to words) per query. This approach allowed us to achieve an impressive 80% accuracy rate in providing relevant answers to customer queries.
+These smaller chunks were then processed through a powerful language model called GPT-3.5-turbo-16k, which had the capability to handle a large number of tokens (roughly equivalent to words) per query. This approach allowed us to achieve an impressive 80% accuracy rate in providing relevant answers to customer queries.
 
 
 ### Technical Blueprint
@@ -71,7 +71,7 @@ After exploring various approaches, we carefully analyzed their effectiveness in
    - Pros: High accuracy with fewer chunks
    - Cons: OpenAI costs remain high
 
-#### 3. Clean Text with Finetuned BGE model:
+### 3. Clean Text with Finetuned BGE model:
    - Retrieval accuracy: 56.8%
    - Used 8 chunks of 200 tokens each
    - Pros: Good accuracy, cost-effective after initial fine-tuning
@@ -83,8 +83,7 @@ After exploring various approaches, we carefully analyzed their effectiveness in
    - Pros: Decent accuracy, fewer chunks needed
    - Cons: Larger chunks may lose context, expensive OpenAI usage
    
-![ebay analysis table](https://github.com/Koredotcom/SearchAssist-Toolkit/assets/59284396/f2cb2739-9d42-4973-8cd1-26a070c98bd2)
-
+![ebay analysis table](https://github.com/Koredotcom/SearchAssist-Toolkit/assets/59284396/a0652eb9-1d75-4919-9ed6-d0c2be131c1d)
 
 ## The Optimal Solution:
 
@@ -105,7 +104,7 @@ By implementing this optimized solution, we were able to handle our high volume 
 ## Conclusion
 
 
-Our journey to optimize our AI-powered customer support system has yielded impressive results. By implementing a custom-tuned solution, we've dramatically cut costs while maintaining satisfactory accuracy. This success underscores the importance of thorough analysis and strategic adjustments in building cost-efficient, high-performing AI systems.
+Through strategic optimization and custom-tuning, we achieved significant cost savings while maintaining high accuracy in our AI-powered customer support system. This project underscores the potential of AI to enhance customer service efficiently and economically. This success underscores the importance of thorough analysis and strategic adjustments in building cost-efficient, high-performing AI systems.
 
 Our experience highlights the immense potential of embedding models in revolutionizing customer support. These models offer a scalable solution that can handle millions of queries accurately while keeping operational expenses in check. It proves that with the right approach, businesses can harness AI to significantly improve customer support without incurring unsustainable costs.
 
