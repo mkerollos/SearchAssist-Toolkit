@@ -82,8 +82,13 @@ We found that the structure of prompts significantly affects the quality of the 
 
 ## Analysis and Top Solutions:
 
-After exploring various approaches, we carefully analyzed their effectiveness in terms of retrieval accuracy and cost efficiency. Our rigorous testing revealed several promising solutions:
+After exploring various approaches, we carefully analyzed their effectiveness in terms of retrieval accuracy and cost efficiency. 
+To evaluate the performance of our different configurations, we primarily focused on chunk recall as our key metric. This measure provides valuable insight into how effectively each solution retrieves relevant information, which is crucial for the accuracy and completeness of responses in our RAG system.
+<br></br>
+**Chunk Recall:** The percentage of expected chunks that are successfully retrieved and used in generating an answer in a RAG system.
+<br></br>
 
+Our rigorous testing revealed several promising solutions:
 ### 1. Clean Text with Finetuned BGE model:
    - Chunk Recall: 78.5%
    - Used 16 chunks of 200 tokens each
