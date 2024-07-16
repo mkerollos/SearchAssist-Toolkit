@@ -114,7 +114,7 @@ Our rigorous testing revealed several promising solutions:
    - Used 8 chunks of 200 tokens each
    - Average Tokens used: ~2k 
    
-![ebay analysis table](https://github.com/Koredotcom/SearchAssist-Toolkit/blob/user/akhilm/ebay_blog/Blog/Assets/ebay_blog_analytics_1_croped.png)
+![ebay analysis table](https://github.com/Koredotcom/SearchAssist-Toolkit/blob/user/akhilm/ebay_blog/Blog/Assets/ebay_blog_analytics-cropped_2.png)
 
 ## The Optimal Solution
 
