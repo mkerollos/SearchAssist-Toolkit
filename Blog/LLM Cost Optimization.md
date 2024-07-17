@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In the competitive world of e-commerce, efficient customer support is crucial for a company's reputation and customer retention. Our recent project involved deploying a cost-effective AI solution to improve this efficiency. Our recent project involved deploying a SearchAI Retrieval-Augmented Generation (RAG) solution for a client. This solution uses advanced language models to understand customer questions and provide relevant answers from our vast knowledge base. This cutting-edge technology allowed our customer service agents to deliver timely and precise responses, significantly improving the overall customer experience.  However, despite the impressive accuracy of the model, we encountered a sharp increase in the generative AI operational costs. Here’s an in-depth look at our journey, the challenges we faced, and the solutions that helped us strike a balance between cost-efficiency and accuracy.
+In the competitive world of e-commerce, efficient customer support is crucial for a company's reputation and customer retention. Our recent project involved deploying a SearchAI Retrieval-Augmented Generation (RAG) solution for a client. This solution uses advanced language models to understand customer questions and provide relevant answers from our vast knowledge base. This cutting-edge technology allowed our customer service agents to deliver timely and precise responses, significantly improving the overall customer experience.  However, despite the impressive accuracy of the model, we encountered a sharp increase in the generative AI operational costs. Here’s an in-depth look at our journey, the challenges we faced, and the solutions that helped us strike a balance between cost-efficiency and accuracy.
 
 ## The Challenge
 
@@ -13,6 +13,10 @@ This exorbitant cost was simply unsustainable for our business, and we found our
 ## Initial Implementation
 
 The primary use case was quite straightforward: whenever a customer asked a question to an agent, the SearchAI system would automatically retrieve the most relevant answers from a pre-ingested knowledge base. Our initial setup involved segmenting knowledge articles into HTML chunks and processing these chunks through GPT-3.5-turbo-16k, as it supported the required token limit (approximately 6500 tokens per query).
+
+### Data Overview
+
+Our knowledge base comprised 3,000 HTML documents on e-commerce customer support, presenting unique challenges for general retrieval systems. The content was rich in industry-specific jargon and terminology, with overlapping information across various topics. The HTML format and domain-specific nature, including unique product names and policies, required careful preprocessing and interpretation. These characteristics demanded a specialized, domain-aware RAG system capable of navigating e-commerce complexities and effectively handling information redundancy.
 
 ### Technical Blueprint
 
@@ -32,88 +36,84 @@ flowchart LR
 ```
 
 
-Our journey to find a solution took us through several interesting approaches, each offering unique benefits and tradeoffs. We focused on optimizing every step of our process, from how we prepared our data to how we leveraged different AI models. Let's walk through the key strategies we explored:
 
-### Our Journey to a Cost-Effective Solution:
+## Our Journey to a Cost-Effective Solution
 
-After identifying the challenges we faced, our team embarked on a journey to find innovative ways to reduce costs while maintaining the quality of our AI-powered customer support. We explored several strategies, each offering unique benefits. Let's walk through these approaches in simple terms:
+Faced with high operational costs, our team embarked on an innovative journey to optimize our AI-powered customer support system. We meticulously refined every step of our process, from data preparation to model selection and implementation. Our exploration led us through various approaches, each offering unique benefits and trade-offs.
+<br></br>
+To evaluate the performance of our different configurations, we primarily focused on chunk recall as our key metric. This measure provides valuable insight into how effectively each solution retrieves relevant information, which is crucial for the accuracy and completeness of responses in our RAG system.
+<br></br>
+**Chunk Recall:**
+The percentage of questions for which at least one chunk from the given expected source is included in the top n chunks sent to the LLM for generating an answer.
 
-### 1. Exploring Different Embedding Models:
-We began by investigating various embedding models, which are crucial components that help our system interpret and represent text. There are many such models available, each with its own strengths. We experimented with several of these, comparing their performance to find the one that offered the best balance of accuracy and cost-efficiency for our specific needs.
-#### Different models we've experimented with:
-
-
-- **QA MPnet Base (SearchAI default embedding Model)**
-- **E5 Base Model**
-- **BGE Base Model**
-- **OpenAI ADA embeddings**
-
-### 2. Fine-Tuning Embedding Models:
-While exploring different models was a good start, we found that off-the-shelf solutions weren't always sufficient for our specific use case. To address this, we employed a technique called "fine-tuning" on the most promising model we had identified. This process involved further training the model on our client's specific data, aiming to make our system even more efficient at understanding and answering customer queries in the context of our client's business. By combining the strengths of existing models with customized training, we hoped to achieve a level of performance that neither approach could deliver on its own.
-
-### 3. Improving How We Store Information:
+ Let's explore the key strategies that guided us to our ultimate solution.
+ 
+### 1. Improving How We Store Information:
 Recognizing that HTML data might not be embedding model-friendly, we explored converting documents into Markdown or Plain Text. This included formats such as:
 
-- Raw HTML
 - Markdown
-- Split Markdown using LangChain MarkdownHeaderTextSplitter
 - Clean Text
+<br></br>
 
-### 4. Optimizing Chunking Strategies
-Chunking the documents effectively is critical for maximizing retrieval accuracy and managing token budgets. Here’s a detailed look into the chunking strategies we explored:
+This optimization of document storage formats yielded tangible benefits. By converting HTML to more embedding-friendly formats, we achieved a notable boost in system performance. Specifically, we observed an average improvement in chunk recall ranging from 4% to 10%. This significant enhancement in retrieval accuracy demonstrates the critical role that appropriate document representation plays in the effectiveness of embedding-based retrieval systems.
 
 
-We observed that maintaining the relative layout and structure of the original HTML documents led to better contextual understanding and retrieval accuracy. For this, we experimented with various chunk sizes and formats:
+### 2. Optimizing Chunking Strategies
 
-- **Chunk Size and Number**: We experimented with different chunk sizes (e.g., 200 tokens, 400 tokens) and the number of chunks per query (e.g., 8 chunks, 16 chunks). Smaller chunks (e.g., 200 tokens) generally preserve more context around specific details, while larger chunks (e.g., 400 tokens) provide broader context but may slightly dilute specific information.
-  
-- **Order and Proximity**: Ensuring the proximity of the chunks to the query in the prompt was vital for the LLM to generate relevant answers. The order in which chunks appear relative to the query also influences the quality of the answers, with more semantically relevant chunks placed nearer to the query.
+Effective document chunking is a critical component in RAG systems, directly impacting both retrieval accuracy and token budget management. Our optimization process focused on fine-tuning chunk characteristics and adapting to different document formats. Here's an overview of our approach:
+
+#### Fine-tuning Chunk Characteristics
+
+Our experimentation encompassed two crucial aspects:
+
+- **Chunk Size and Number**: We tested various combinations, including 200-token and 400-token chunks, and different numbers of chunks per query (8 and 16). Smaller chunks (200 tokens) tended to preserve more specific contextual details, while larger chunks (400 tokens) provided broader context at the risk of slightly diluting specific information.
+
+- **Order and Proximity**: We found that the arrangement of chunks within the prompt significantly affected the LLM's ability to generate relevant answers. Placing semantically relevant chunks closer to the query improved response quality.
 
 #### Format-Sensitive Chunking
 
-Beyond layout, the document format plays a crucial role in embedding generation:
+Recognizing that document format plays a crucial role in embedding generation, we explored format-specific strategies:
 
-- **Markdown Conversion**: By converting HTML to Markdown, we ensure cleaner, more structured input for embedding models.
-- **Plain Text**: Simplifying documents to plain text often removes extraneous data and potential noise.
+- **Markdown-Aware Chunking**: We transformed HTML documents into Markdown format, providing cleaner, more structured input for our embedding models. To further enhance our chunking strategy, we utilized LangChain's MarkdownHeaderTextSplitter. This tool allowed us to create chunks that respect the hierarchical structure of Markdown documents, preserving the context provided by headers and subheaders. By converting to Markdown and using a specialized splitter, we maintained document structure and semantic relationships, leading to more meaningful and context-aware embeddings.
+
+    This approach to format-sensitive chunking enabled us to better preserve document structure and semantic relationships throughout the embedding process.
+
+By addressing these key areas, we were able to develop a chunking strategy that balanced preserving document context, optimizing for token efficiency, and accommodating various document formats.
+
+### 3. Exploring Different Embedding Models:
+We began by investigating various embedding models, which are crucial components that help our system interpret and represent text. Our selection process was guided by performance metrics and industry benchmarks.Specifically, at the time we were exploring different embedding models, we chose E5 Base and BGE Base models based on their high rankings in retrieval accuracy on the MTEB (Massive Text Embedding Benchmark) leaderboard. Additionally, we included OpenAI's ADA embeddings in our evaluation due to its diverse training dataset, which potentially offers robust generalization capabilities. Here are the different models we experimented with:
+
+- [**E5 Base Model**](https://huggingface.co/intfloat/e5-base)
+- [**BGE Base Model**](https://huggingface.co/BAAI/bge-base-en-v1.5)
+- [**OpenAI ADA embeddings**](https://platform.openai.com/docs/guides/embeddings/embedding-models)
+    
+ Our experimentation with various embedding models yielded significant results. Compared to the default model, we observed a substantial increase in performance, with chunk recall improving by an average of 7-15%. This marked improvement underscores the importance of selecting the right embedding model for enhancing retrieval accuracy in RAG systems.
+
+### 4. Fine-Tuning Embedding Models:
+While exploring different models was a good start, we found that off-the-shelf solutions weren't always sufficient for our specific use case. To address this, we employed a technique called "fine-tuning" on the most promising model we had identified. This process involved further training the model on our client's specific data, aiming to make our system even more efficient at understanding and answering customer queries in the context of our client's business. By combining the strengths of existing models with customized training, we hoped to achieve a level of performance that neither approach could deliver on its own.
+
+ This fine-tuning process led to a notable enhancement in retrieval performance, with chunk recall improving by an average of 3-5% compared to the best available pre-trained embedding models. This improvement underscores the value of tailoring embedding models to specific domains and datasets, even when starting with high-quality pre-trained models.
 
 ### 5. Prompt Engineering
 
 We found that the structure of prompts significantly affects the quality of the generated answers. By refining our prompt engineering techniques to include relevant context, specific instructions, and examples to produce more accurate and context-appropriate responses. This optimization improved answer relevance, reduced unnecessary token usage, and enhanced overall performance and cost efficiency. Through iterative testing, we significantly improved the quality of our AI-generated customer support responses.
 
+
 ## Analysis and Top Solutions:
 
-After exploring various approaches, we carefully analyzed their effectiveness in terms of retrieval accuracy and cost efficiency. 
-To evaluate the performance of our different configurations, we primarily focused on chunk recall as our key metric. This measure provides valuable insight into how effectively each solution retrieves relevant information, which is crucial for the accuracy and completeness of responses in our RAG system.
-<br></br>
-**Chunk Recall:** The percentage of expected chunks that are successfully retrieved and used in generating an answer in a RAG system.
-<br></br>
+Through our extensive testing, we have identified several promising solutions. Here is a brief overview of the top five configurations that have shown the most potential:
 
-Our rigorous testing revealed several promising solutions:
-### 1. Clean Text with Finetuned BGE model:
-   - Chunk Recall: 78.5%
-   - Used 16 chunks of 200 tokens each
-   - Average Tokens used: ~4k 
+### Comparison of Models
+| Configuration                                            | Chunk Recall | No. of Chunks Sent to LLM | Tokens per Chunk | Average Tokens Used | Details                                                                                             |
+|----------------------------------------------------------|--------------|--------------------------|------------------|---------------------|-----------------------------------------------------------------------------------------------------|
+| Clean Text with Finetuned BGE model                      | 78.5%        | 16 chunks                | 200              | ~4k                 | Cleaned data with a fine-tuned BGE model, using 16 chunks of 200 tokens each, approximately 4k tokens used for generating an answer. |
+| Clean Text with OpenAI ADA model                         | 77.8%        | 16 chunks                | 200              | ~4k                 | Cleaned data with OpenAI ADA model, using 16 chunks of 200 tokens each, approximately 4k tokens used for generating an answer.      |
+| Markdown with OpenAI ADA model                           | 76.6%        | 8 chunks                 | 400              | ~4k                 | Markdown data with OpenAI ADA model, using 8 chunks of 400 tokens each, approximately 4k tokens used for generating an answer.      |
+| Clean Text with OpenAI ADA model (Alternative Config)    | 76.4%        | 8 chunks                 | 200              | ~2k                 | Cleaned data with OpenAI ADA model, using 8 chunks of 200 tokens each, approximately 2k tokens used for generating an answer.       |
+| Clean Text with Finetuned BGE model (Alternative Config) | 73.8%        | 8 chunks                 | 200              | ~2k                 | Cleaned data with a fine-tuned BGE model, using 8 chunks of 200 tokens each, approximately 2k tokens used for generating an answer. |
 
-### 2. Clean Text with OpenAI ADA model:
-   - Chunk Recall: 77.8%
-   - Used 16 chunks of 200 tokens each
-   - Average Tokens used: ~4k 
-
-### 3. Markdown with OpenAI ADA model:
-   - Chunk Recall: 76.6%
-   - Used 8 chunks of 400 tokens each
-   - Average Tokens used: ~4k 
-
-### 4. Clean Text with OpenAI ADA model (Alternative Configuration):
-   - Chunk Recall: 76.4%
-   - Used 8 chunks of 200 tokens each
-   - Average Tokens used: ~2k 
-
-### 5. Clean Text with Finetuned BGE model (Alternative Configuration):
-   - Chunk Recall: 73.8%
-   - Used 8 chunks of 200 tokens each
-   - Average Tokens used: ~2k 
-   
+   For a comprehensive analysis of all the solutions we have considered, refer to the details below:
+   <br></br>
 ![ebay analysis table](https://github.com/Koredotcom/SearchAssist-Toolkit/blob/user/akhilm/ebay_blog/Blog/Assets/ebay_blog_analytics-cropped_2.png)
 
 ## The Optimal Solution
