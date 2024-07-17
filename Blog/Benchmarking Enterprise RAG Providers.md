@@ -14,12 +14,9 @@ RAG evaluation assesses the effectiveness of AI systems that combine retrieval m
 
 In our study, we employed two evaluation frameworks: CRAG and RAGAS.
 
-- **CRAG (Comprehensive Retrieval-Augmented Generation)**:  Comprehensive RAG Benchmark (CRAG), a factual question answering benchmark of 4,409 question-answer pairs and mock APIs to simulate web
-and Knowledge Graph (KG) search. CRAG is designed to encapsulate a diverse
-array of questions across five domains and eight question categories, reflecting
-varied entity popularity from popular to long-tail, and temporal dynamisms ranging
-from years to second.
-- **RAGAS (Retrieval-Augmented Generation Accuracy Score)**: Ragas is built on the idea that LLMs can effectively evaluate natural language output by forming paradigms that overcome the biases of using LLM as judges directly and providing continuous scores that are explainable and intuitive to understand). Paper, Code, Docs.
+- **[CRAG](https://arxiv.org/pdf/2406.04744) (Comprehensive Retrieval-Augmented Generation)**:  Comprehensive RAG Benchmark (CRAG), a factual question answering benchmark of 4,409 question-answer pairs and Knowledge Graph (KG) search.CRAG is designed to encapsulate a diverse array of questions across five domains and eight question categories. It reflects varied entity popularity from popular to long-tail, and temporal dynamisms ranging from years to seconds.
+###
+- **[RAGAS](https://arxiv.org/pdf/2309.15217) (Retrieval-Augmented Generation Accuracy Score)**: Ragas is built on the idea that LLMs can effectively evaluate natural language output. It forms paradigms that overcome the biases of using LLMs as judges directly and provides continuous scores that are explainable and intuitive to understand.
 
 .
 
@@ -58,7 +55,7 @@ CRAG uses a scoring method to assess the performance of RAG systems based on the
 3. **Missing**: The response is “I don’t know”, “I’m sorry I can’t find ...”, a system error such as an empty response, or a request from the system to clarify the original question.
 4. **Incorrect**: The response provides wrong or irrelevant information to answer the user’s question.
 
-The scoring method, Scoreh, assigns scores of 1, 0.5, 0, and -1 for perfect, acceptable, missing, and incorrect answers, respectively. For a given RAG system, we compute the average score from all examples in the evaluation set as the final score.
+The scoring method,assigns scores of 1, 0.5, 0, and -1 for perfect, acceptable, missing, and incorrect answers, respectively. For a given RAG system, we compute the average score from all examples in the evaluation set as the final score.
 
 The significance of each metric lies in its ability to pinpoint specific strengths and weaknesses in the RAG system, guiding further improvements.
 
@@ -66,17 +63,15 @@ The significance of each metric lies in its ability to pinpoint specific strengt
 ### Evaluation Data Needed for Ragas and CRAG
 Your RAG pipeline evaluation will need four key data points.
 
-Question: The question asked.
+**Question:**  The specific query or request made to the RAG system.
 
-Contexts: Text chunks from your data that best match the question’s meaning.
+**Contexts:** Relevant text chunks from your data that closely match the question's meaning (not required for CRAG evaluation).
 
-Answer: Generated answer from your RAG chatbot to the question.
+**Answer:** Generated answer from your RAG chatbot to the question.
 
-Ground truth answer: Expected answer to the question.
+**Ground truth answer:** The expected or correct answer to the question..
 
-<h5>
-Contexts is not required for CRAG Evaulation
-</h5>
+
 
 ## Our Case Study
 
@@ -92,10 +87,10 @@ We have 200 question that we used for evaluating the RAG Application contains di
 
 ### Create and Configure RAG Systems
 
-Create a application in each RAG provider and configure with specific settings:
-**1. Number of Documents Ingested :** We ingested 1000 strucured data in each RAG Application to ensure a comprehensive knowledge base.
-**2.Embedding Model Used :** We used default embeddings of respective RAG provider. This is Selected to optimize retrieval performance.
-**3.LLM Model Used**: We used GPT-4 LLM Model for Azure,Mendable,SearchAI and Gemini 1.0 Pro for VertexAI. This is Chosen to enhance the accuracy of generated responses.
+To set up each RAG provider's application and configure it with specific settings, we followed these steps:
+**1. Number of Documents Ingested :** We ingested 1000 structured data entries into each RAG application to establish a comprehensive knowledge base.
+**2.Embedding Model Used :** Default embeddings provided by each respective RAG provider were selected to optimize retrieval performance.
+**3.LLM Model Used**: We used the GPT-4 LLM model for Azure, Mendable, and SearchAI, aiming to optimize response accuracy. For VertexAI, we opted for the Gemini 1.0 Pro model to achieve similar enhancements in response quality..
 
 ### Scripts Used for Evaluation
 
@@ -123,7 +118,11 @@ Below are the aggregated results of the CRAG evaluation based on 200 questions:
 This CRAG score Ranges from -1 to 1 where -1 refers halucinated results 1 refers to Accurate results
 We are calculating score base on below formula
 
-***Formula***: ((2 * n_correct + n_miss) / n )- 1
+***Formula***: \[
+\left( \frac{2 \times \text{n\_correct} + \text{n\_miss}}{\text{n}} \right) - 1
+\]
+
+
 ***Significance***: This score combines the number of correct answers (weighted double) and the number of missing answers, normalized by the total number of predictions. It provides an overall performance metric where higher values indicate better performance.
 
 <div style="text-align:center">
