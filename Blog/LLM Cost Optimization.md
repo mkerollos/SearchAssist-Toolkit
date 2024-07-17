@@ -92,7 +92,7 @@ We began by investigating various embedding models, which are crucial components
 ### 4. Fine-Tuning Embedding Models:
 While exploring different models was a good start, we found that off-the-shelf solutions weren't always sufficient for our specific use case. To address this, we employed a technique called "fine-tuning" on the most promising model we had identified. This process involved further training the model on our client's specific data, aiming to make our system even more efficient at understanding and answering customer queries in the context of our client's business. By combining the strengths of existing models with customized training, we hoped to achieve a level of performance that neither approach could deliver on its own.
 
- This fine-tuning process led to a notable enhancement in retrieval performance, with chunk recall improving by an average of 3-5% compared to the best available pre-trained embedding models. This improvement underscores the value of tailoring embedding models to specific domains and datasets, even when starting with high-quality pre-trained models.
+ This fine-tuning process led to a notable enhancement in retrieval performance, with chunk recall improving by an average of 3-8% compared to the best available pre-trained embedding models. This improvement underscores the value of tailoring embedding models to specific domains and datasets, even when starting with high-quality pre-trained models.
 
 ### 5. Prompt Engineering
 
@@ -114,7 +114,7 @@ Through our extensive testing, we have identified several promising solutions. H
 
    For a comprehensive analysis of all the solutions we have considered, refer to the details below:
    <br></br>
-![ebay analysis table](https://github.com/Koredotcom/SearchAssist-Toolkit/blob/user/akhilm/ebay_blog/Blog/Assets/ebay_blog_analytics-cropped_2.png)
+![ebay analysis table](https://github.com/Koredotcom/SearchAssist-Toolkit/blob/user/akhilm/ebay_blog/Blog/Assets/ebay_blog_analytics-Sheet_cropped.png)
 
 ## The Optimal Solution
 
