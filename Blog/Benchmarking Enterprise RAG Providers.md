@@ -88,8 +88,11 @@ We have 200 question that we used for evaluating the RAG Application contains di
 ### Create and Configure RAG Systems
 
 To set up each RAG provider's application and configure it with specific settings, we followed these steps:
+#####
 **1. Number of Documents Ingested :** We ingested 1000 structured data entries into each RAG application to establish a comprehensive knowledge base.
+####
 **2.Embedding Model Used :** Default embeddings provided by each respective RAG provider were selected to optimize retrieval performance.
+####
 **3.LLM Model Used**: We used the GPT-4 LLM model for Azure, Mendable, and SearchAI, aiming to optimize response accuracy. For VertexAI, we opted for the Gemini 1.0 Pro model to achieve similar enhancements in response quality..
 
 ### Scripts Used for Evaluation
