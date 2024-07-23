@@ -29,6 +29,9 @@ Follow the steps below to set up and run the Salesforce Custom Extraction Utilit
 
 4. **Create a `.env` file and configure the following environment variables**:
     ```plaintext
+     
+    # Specify the language model provider: "openai" or "azure"
+    llm_used=""
 
     # open ai
     open_ai_key=""
@@ -43,6 +46,10 @@ Follow the steps below to set up and run the Salesforce Custom Extraction Utilit
     userSubDomain= ""
     deployment=""
     Apiversion=""
+
+    #update testing environment
+    # if cloud then test_env="login" for sandbox="test"
+    test_env=""
 
     # Access Token
     hostUrl = "***"
@@ -62,6 +69,22 @@ Follow the steps below to set up and run the Salesforce Custom Extraction Utilit
     # Input and Output Paths
     input_path = ".data/input/"
     output_path = ".data/output/"
+   
+
+    #Proxy URLs for network access
+    proxies= {"http": "PROXY URL","https": "PROXY URL"}
+
+    #Specifies whether data fetching uses URL names or Item IDs
+    #inputFormat="urlnames" or inputFormat="itemids"
+    inputFormat =""
+
+    #SSL Verification
+    #Set to "False" if SSL Verification is not needed, otherwise set to "True"
+    ssl=""
+
+    #If you need the details of specific documents you can enter their article ids or leave it as empty
+    itemIds=""
+
     ```
 
 5. **Create and activate a virtual environment**:
