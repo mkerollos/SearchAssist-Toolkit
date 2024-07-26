@@ -3,17 +3,15 @@
 
 ## Introduction
 
-In modern search technology, semantic search has revolutionized information retrieval by understanding context and meaning, surpassing traditional keyword matching. SearchAssist's default embedding models offer robust semantic capabilities for most clients, transforming text into meaningful vector representations. However, as data expands and diversifies, new challenges emerge. Highly specialized, domain-specific data may fall outside the scope of default models, potentially leading to less accurate results and impacting user experience. This growing complexity in data landscapes highlights the need for more adaptable and specialized search solutions to maintain accuracy and relevance across diverse domains.
-
-To address this challenge, we introduce Custom Embeddings Support in SearchAssist. This powerful feature allows you to integrate any custom embedding model, providing the flexibility needed to handle unique and specialized data. By leveraging custom embeddings, you can ensure that your search functionality is not only effective but also finely tuned to your specific requirements.
+Semantic search surpasses traditional keyword matching by understanding context and meaning. While SearchAssist's default embedding models offer robust capabilities, highly specialized, domain-specific data can challenge these models. To address this, we introduce Custom Embeddings Support in SearchAssist, allowing the integration of any custom embedding model to handle unique and specialized data effectively.
 
 For a detailed explanation of what embeddings are and how they work, you can refer to this [comprehensive guide on Hugging Face](https://huggingface.co/blog/getting-started-with-embeddings).
 
 ## Custom Embeddings Support in SearchAssist
 
-Custom Embeddings Support in SearchAssist allows you to use your preferred embedding models instead of the default ones. This flexibility is crucial for applications requiring specialized embeddings to improve search accuracy and relevance. With this feature, you can integrate any custom embedding model through an API, enhancing your application's ability to handle unique data and deliver precise search results.
+Custom Embeddings Support in SearchAssist allows you to use your preferred embedding models instead of the default ones. This flexibility is crucial for improving search accuracy and relevance for specialized applications. You can integrate any custom embedding model through an API, enhancing your application's ability to handle unique data and deliver precise search results.
 
-By using custom embeddings, you can tailor the search functionality to better align with your specific data and use cases. Whether your data is from a specialized domain or requires unique processing, custom embeddings ensure that SearchAssist can meet your needs effectively.
+By leveraging custom embeddings, you can ensure your search functionality is finely tuned to your specific requirements. This capability allows SearchAssist to effectively process specialized data, improving overall search performance and maintaining accuracy as data grows and diversifies.
 
 ## How to Integrate Custom Embeddings in SearchAssist
 
