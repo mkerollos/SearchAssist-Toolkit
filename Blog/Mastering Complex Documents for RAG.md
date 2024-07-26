@@ -1,4 +1,4 @@
-# Revolutionizing RAG Models with Layout-Aware Chunk Extraction: Mastering Complex Documents
+# Revolutionizing RAG Models with Layout-Aware Chunk Extraction: Mastering Complex PDFs
 
 In today's data-driven world, the ability to quickly and accurately process complex documents is more crucial than ever. Retrieval-Augmented Generation (RAG) models have emerged as powerful tools in this arena, offering the promise of generating responses that are both accurate and contextually rich. However, these models have long grappled with a significant challenge: how to effectively handle documents with intricate layouts, tables, and images. Enter layout-aware chunk extraction – a revolutionary approach that's transforming how we process and understand sophisticated documents.
 
