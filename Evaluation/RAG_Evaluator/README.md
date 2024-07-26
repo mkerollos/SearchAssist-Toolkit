@@ -1,4 +1,4 @@
-# README
+# RAG Evaluator
 
 ## Overview
 
