@@ -24,24 +24,29 @@ graph TD
     A[Document Loading] --> B[Preprocessing]
     B --> C[Intelligent Layout Detection]
     C --> D[Structure Analysis]
-    D --> E[Smart Chunking]
-    E --> F[Metadata Enrichment]
+    C --> E[Layout Types]
 
-    C --> |Text Blocks| G((Element<br>Identification))
-    C --> |Titles| G
-    C --> |Tables| G
-    C --> |Figures| G
-    C --> |Footnotes| G
+    E --> F1[Text Blocks]
+    E --> F2[Titles]
+    E --> F3[Tables]
+    E --> F4[Figures]
+    E --> F5[Footnotes]
 
-    D --> |Hierarchy| H((Structure<br>Determination))
-    D --> |Relationships| H
+    D --> G[Hierarchy Determination]
+    D --> H[Relationship Identification]
 
-    E --> |Context Preservation| I((Chunk<br>Creation))
-    E --> |Element Linking| I
+    G --> I[Smart Chunking]
+    H --> J[Smart Chunking]
 
-    F --> |Layout Info| J((Metadata<br>Addition))
-    F --> |Structural Info| J
-    F --> |Related Chunks| J
+    J --> K[Metadata Enrichment]
+    
+    I --> K[Metadata Enrichment]
+
+    K --> L[Context Preservation]
+    K --> M[Element Linking]
+    K --> N[Layout Info]
+    K --> O[Structural Info]
+    K --> P[Related Chunks]
 ```
 
 #### Document Loading and Preprocessing
