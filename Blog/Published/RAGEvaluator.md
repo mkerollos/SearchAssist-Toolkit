@@ -1,6 +1,9 @@
 
 # RAGEvaluator: Simplifying the Evaluation of Retrieval-Augmented Generation Applications
 
+*Author: Akhil Sainath Maddala*
+
+
 ## Introduction
 
 In the rapidly evolving world of artificial intelligence, Retrieval-Augmented Generation (RAG) has emerged as a game-changer. RAG combines the power of large language models (LLMs) with external knowledge retrieval, enhancing the accuracy and relevance of AI-generated responses. But with great power comes great responsibility - how do we ensure that our RAG applications are performing as expected?
