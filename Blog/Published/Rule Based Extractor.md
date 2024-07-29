@@ -1,5 +1,6 @@
 
 # Extractive Snippets: Understanding the HTML Structure for Optimal Extraction
+*Author: Riyaz Ahmed*
 
 ## Introduction
 

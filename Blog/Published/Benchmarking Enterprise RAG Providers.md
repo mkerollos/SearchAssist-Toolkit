@@ -1,4 +1,5 @@
 # Benchmarking Enterprise RAG Providers: A Case Study on Azure, Vertex, Mendable, and SearchAI
+*Author: Niranjan Kota*
 
 ## Introduction
 

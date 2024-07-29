@@ -1,4 +1,5 @@
 # Ensuring Full Visibility: Our Path to Effective Monitoring with New Relic
+*Author: Gautham Ghanta*
 
 ## Introduction
 Imagine diving deep into the complex world of application debugging. We began our journey by sifting through logs, hunting for errors and tracking time metrics. Extracting and analyzing these time values manually became a laborious and inefficient task. This led us to explore monitoring tools that could streamline the process.

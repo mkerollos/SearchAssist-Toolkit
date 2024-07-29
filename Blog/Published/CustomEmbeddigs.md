@@ -1,5 +1,6 @@
 
 # Custom Embeddings Support in SearchAssist
+*Author: Riyaz Ahmed*
 
 ## Introduction
 
