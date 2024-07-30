@@ -8,7 +8,7 @@
 
 In the rapidly evolving world of artificial intelligence, Retrieval-Augmented Generation (RAG) has emerged as a game-changer. RAG combines the power of large language models (LLMs) with external knowledge retrieval, enhancing the accuracy and relevance of AI-generated responses. But with great power comes great responsibility - how do we ensure that our RAG applications are performing as expected?
 
-Enter [RAGEvaluator](https://github.com/Koredotcom/SearchAssist-Toolkit/tree/akhilm/rag_evaluator/Evaluation/RAG_Evaluator), a powerful tool designed to assess and optimize RAG applications. In this blog post, we'll explore how RAGEvaluator works, why it's crucial for developers and data scientists, and how you can use it to improve your RAG-based systems.
+Enter [RAGEvaluator](https://github.com/Koredotcom/SearchAssist-Toolkit/tree/master/Evaluation/RAG_Evaluator), a powerful tool designed to assess and optimize RAG applications. In this blog post, we'll explore how RAGEvaluator works, why it's crucial for developers and data scientists, and how you can use it to improve your RAG-based systems.
 
 ## Introducing RAGEvaluator: A RAG Evaluation Solution
 

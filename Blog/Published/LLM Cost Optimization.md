@@ -121,7 +121,7 @@ Through our extensive testing, we have identified several promising solutions. H
    For a comprehensive analysis of all the solutions we have considered, refer to the details below:
    <br></br>
 ### Solutions Comparison table
-![Solutions Comparison table](https://github.com/Koredotcom/SearchAssist-Toolkit/blob/user/akhilm/ebay_blog/Blog/Assets/solution_comparison_table.png)
+![Solutions Comparison table](https://github.com/Koredotcom/SearchAssist-Toolkit/blob/master/Blog/Assets/solution_comparison_table.png)
 
 ## The Optimal Solution
 
