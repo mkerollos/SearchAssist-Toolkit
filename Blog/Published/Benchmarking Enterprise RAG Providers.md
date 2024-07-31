@@ -23,7 +23,7 @@ In our study, we employed two evaluation frameworks: CRAG and RAGAS.
 
 <div style="text-align:center">
 
-![RAGAS](./Assets/rag.png)
+![RAGAS](../Assets/rag.png)
 
 </div>
 
@@ -98,7 +98,8 @@ To set up each RAG provider's application and configure it with specific setting
 
 ### Scripts Used for Evaluation
 
-[Download CRAG Evaluation script](https://drive.google.com/file/d/1CYFRlK-Sh6pxNBNMCaBLfzo1uSQgf66q/view?usp=drive_link)
+[Download CRAG Evaluation script](https://drive.google.com/file/d/1N_j1plWOAbJA1H_sm6a-u4QjBo610GOT/view?usp=sharing)
+
 [Download RAGAS Evaluation script](https://drive.google.com/file/d/1CYFRlK-Sh6pxNBNMCaBLfzo1uSQgf66q/view?usp=drive_link)
 
 ### Performance Statistics
@@ -116,7 +117,7 @@ Below are the aggregated results of the CRAG evaluation based on 200 questions:
 | SearchAI           | 30.5        | 43.5        | 26            |
 
 
-![CRAG](./Assets/CRAG_Metrics.png)
+![CRAG](../Assets/CRAG_Metrics.png)
 
 ***Score of Each RAG Providers***
 This CRAG score Ranges from -1 to 1 where -1 refers halucinated results 1 refers to Accurate results
@@ -131,7 +132,7 @@ We are calculating score base on below formula
 
 <div style="text-align:center">
 
-![CRAG](./Assets/CRAG_score.png)
+![CRAG](../Assets/CRAG_score.png)
 
 </div>
 
@@ -139,17 +140,20 @@ We calculated(In percentages) how each RAG Performs for various Question Types(2
 
 <div style="text-align:center">
 
-![QuestionType](./Assets/CRAG_Question_Type.png)
+![QuestionType](../Assets/CRAG_Question_Type.png)
 
 </div>
+
+![QuestionType](../Assets/CRAG_QuestionType.png)
 
 
 We also calculated(in percentages) how each RAG performs for various Domains(40 question per Domain)
 
 <div style="text-align:center">
 
-![Domain](./Assets/CRAG_Domain.png)
+![Domain](../Assets/CRAG_Domain.png)
 
+![Domain](..//Assets/CRAG_by_Domain.png)
 </div>
 
 
@@ -240,6 +244,15 @@ We also calculated(in percentages) how each RAG performs for various Domains(40 
 ![RAGAS](./Assets/RAGAS.png)
 
 </div>
+
+| Metric              | System 1 | System 2 | System 3 | System 4 |
+|---------------------|----------|----------|----------|----------|
+| Answer Correctness  | 34.60%   | 32.02%   | 32.15%   | 48.51%   |
+| Answer Relevancy    | 67.45%   | 77.78%   | 48.46%   | 58.78%   |
+| Faithfulness        | 40.02%   | 63.49%   | 52.10%   | 67.91%   |
+| Context Precision   | 74.31%   | 63.67%   | 63.39%   | 65.06%   |
+| Answer Similarity   | 81.31%   | 80.62%   | 78.92%   | 80.97%   |
+
 
 ## Conclusion
 In this comprehensive evaluation of enterprise RAG providers using the CRAG and RAGAS frameworks, we have identified key insights into the performance, strengths, and areas for improvement of these systems.
