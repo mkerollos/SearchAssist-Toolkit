@@ -1,3 +1,5 @@
+## Search AI Blogs Index
+   This index provides a comprehensive list of all our published blogs, offering valuable insights and updates on various aspects of search AI product. Explore these articles to stay informed on the latest developments and best practices.
 
 | Title | Description | Blog URL | Author |
 |-------|-------------|-----------|--------|
