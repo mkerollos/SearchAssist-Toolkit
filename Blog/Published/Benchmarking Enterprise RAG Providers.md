@@ -241,7 +241,7 @@ We also calculated(in percentages) how each RAG performs for various Domains(40 
 
 <div style="text-align:center">
 
-![RAGAS](./Assets/RAGAS.png)
+![RAGAS](../Assets/RAGAS.png)
 
 </div>
 
