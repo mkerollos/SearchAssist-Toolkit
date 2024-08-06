@@ -77,8 +77,13 @@ The results are saved in the `./outputs` directory with a timestamped filename. 
 
 Ensure that the `OPENAI_API_KEY` environment variable is set with your OpenAI API key before running the script:
 
+Linux
 ```sh
 export OPENAI_API_KEY="your_openai_api_key"
+```
+Windows
+```sh
+$env:OPENAI_API_KEY="your_openai_api_key"
 ```
 
 ###Configuration
@@ -91,7 +96,8 @@ Create a config.json file in the config directory with the necessary configurati
 {
     "auth_token":"<SA API token>",
     "app_id":"<SA stream ID>",
-    "EVALUATION_MODEL_NAME": "<Model to evaluate>"
+    "EVALUATION_MODEL_NAME": "<Model to evaluate>",
+    "domain": "searchassist-app.kore.ai"
 }
 ```
 Replace `EVALUATION_MODEL_NAME` with the actual name of your model, and replace `app_id` and `auth_token` with the `streamId` and `JWT auth token` of your Search AI application.

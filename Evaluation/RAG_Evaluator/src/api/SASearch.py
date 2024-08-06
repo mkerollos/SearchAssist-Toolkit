@@ -41,7 +41,7 @@ class AnswerProcessor:
         context_urls = set()
         for chunk in answer.get('template', {}).get('chunk_result', {}).get('generative', []):
             source = chunk.get('_source', {})
-            if source.get('sent_to_LLM'):
+            if source.get('sentToLLM'):
                 contexts.append(source.get('chunkText', ''))
                 context_urls.add(source.get('recordUrl', ''))
         return contexts, ",".join(context_urls)

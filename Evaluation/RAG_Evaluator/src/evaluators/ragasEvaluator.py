@@ -15,6 +15,7 @@ from .baseEvaluator import BaseEvaluator
 
 class RagasEvaluator(BaseEvaluator):
     def evaluate(self, queries, answers, ground_truths, contexts):
+        ground_truths = [str(ground_truth).strip() for ground_truth in ground_truths]
         data = {
             'question': queries,
             'answer': answers,
