@@ -1,12 +1,13 @@
 const regexPattern = /chk-[a-zA-Z0-9-]+/g;
 
-function transformChunkMap(chunkIdMap, chunkIds) {
+function transformChunkMap(chunkIdMap, answerText) {
+    let chunkIds = answerText.match(regexPattern);
     const generativeChunks = [];
 
     for (const chunkId in chunkIdMap) {
         if (chunkIdMap.hasOwnProperty(chunkId)) {
             const chunk = chunkIdMap[chunkId];
-            chunk.usedInAnswer = chunkIds.includes(chunkId);
+            chunk.usedInAnswer = chunkIds?.includes(chunkId);
 
             const additionalInfo = {
                 chunkId: chunk.chunkId,
@@ -51,7 +52,6 @@ async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
     answerTextTemp = answerTextTemp.slice(0, lastIndex);
     let chunkIds = answerText.match(regexPattern);
 
-    generativeChunks = transformChunkMap(chunkIdMap, chunkIds);
 
     if (chunkIds.length > 0) {
         let chunkId = chunkIds[0].split(',')[0];
@@ -110,7 +110,7 @@ async function frameAnswerFromChunks(openaiAns, chunkIdMap) {
     } else {
         citationType = 'citation_snippet';
     }
-    return [answer, imageUrl, chunkData, citationType, generativeChunks];
+    return [answer, imageUrl, chunkData, citationType];
 }
 
 async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, completion_time) {
@@ -124,6 +124,7 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, comp
     }
     let openaiAnswer = openaiResponse.choices;
     let answerFound = false;
+    var generativeChunks = transformChunkMap(chunkIdMap, openaiAnswer[0]['message']['content']);
     if (openaiAnswer && openaiAnswer.length > 0) {
         let answerSplitObj = openaiAnswer[0]['message']['content'];
         llmAnswer['data'][0]['answer'] = answerSplitObj;
@@ -135,7 +136,6 @@ async function generateAnswerFromOpenaiResponse(openaiResponse, chunkIdMap, comp
             let answer = response[0];
             let imageUrl = response[1];
             let citationType = response[3];
-            var generativeChunks = response[4] || [];
             llmAnswer['type'] = citationType;
             llmAnswer['data'][0]["isPresentedAnswer"] = true;
             llmAnswer['data'][0]["message"] = "Presented Answer";
