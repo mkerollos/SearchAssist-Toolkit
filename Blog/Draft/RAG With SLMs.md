@@ -45,7 +45,7 @@
 ### Background
 
 #### SearchAI Application
-SearchAI is a versatile conversational search platform that enables seamless content discovery across various data sources, including website crawlers, structured and unstructured documents, catalogs, FAQs, and knowledge bases. It features pre-built integrations with popular commerce and content platforms, ensuring automatic synchronization and document access control. Additionally, SearchAI supports federated search capabilities, allowing you to leverage results from existing business systems. With intelligent virtual assistant actions, AI-powered relevance optimization, and a customizable user interface, it creates a personalized and engaging search experience that drives brand engagement and conversions.
+SearchAI is a versatile enterprise Retrieval Augmented Generation(RAG) platform that enables seamless content discovery across various data sources, including website crawlers, structured and unstructured documents, catalogs, FAQs, and knowledge bases. It features pre-built integrations with popular commerce and content platforms, ensuring automatic synchronization and document access control. Additionally, SearchAI supports federated search capabilities, allowing you to leverage results from existing business systems. With intelligent virtual assistant actions, AI-powered relevance optimization, and a customizable user interface, it creates a personalized and engaging search experience that drives brand engagement and conversions.
 
 
 #### Challenges with Traditional Search Approaches in the era of RAG
@@ -77,7 +77,7 @@ Many of these issues can be addressed by using an LLM (Large Language Model)-gen
 
 ### How Big is a Small Language Model?
 
-While there is no strict definition, Small Language Models (SLMs) are generally considered to be at least an order of magnitude smaller than their larger counterparts, LLMs. For this use case, we define SLMs as having between 2 billion and 7 billion parameters.
+While there is no strict definition, Small Language Models (SLMs) are generally considered to be at least an order of magnitude smaller than their larger counterparts, LLMs. For this use case, we define SLMs as having around 2-7 billion parameters.
 
 ### SLMs vs LLMs
 
