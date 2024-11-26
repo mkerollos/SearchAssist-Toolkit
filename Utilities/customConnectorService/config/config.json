@@ -8,7 +8,7 @@
     },
     "configuration": {
       "api": {
-        "contentUrl": "https://{{YOUR_SERVICE_NOW_DOMAIN/}}api/now/table/kb_knowledge",
+        "contentUrl": "https://{{YOUR_SERVICE_NOW_DOMAIN}}/api/now/table/kb_knowledge",
         "method": "GET"
       },
       "pagination": {
