@@ -2,8 +2,8 @@
     "name": "customConnector",
     "type": "customConnector",
     "authDetails": {
-      "username": "SearchAI",
-      "password": "Kore@123",
+      "username": "YOUR_USERNAME",
+      "password": "YOUR_PASSWORD",
       "authorizationType": "BasicAuth"
     },
     "configuration": {
