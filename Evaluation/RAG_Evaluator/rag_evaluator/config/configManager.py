@@ -1,7 +1,11 @@
 # src/config/configManager.py
 
 import json
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class ConfigManager:
     _instance = None
@@ -13,9 +17,32 @@ class ConfigManager:
         return cls._instance
 
     def _load_config(self):
-        config_path = Path(__file__).parent / 'config.json'
-        with open(config_path, 'r') as f:
-            return json.load(f)
+        return {
+            "koreai": {
+                "api_mode": os.getenv("KORE_API_MODE"),
+                "app_id": os.getenv("KORE_APP_ID"),
+                "client_id": os.getenv("KORE_CLIENT_ID"),
+                "client_secret": os.getenv("KORE_CLIENT_SECRET"),
+                "domain": os.getenv("KORE_DOMAIN")
+            },
+            "openai": {
+                "model_name": os.getenv("OPENAI_MODEL_NAME"),
+                "embedding_name": os.getenv("OPENAI_EMBEDDING_NAME")
+            },
+            "azure": {
+                "openai_api_version": os.getenv("AZURE_OPENAI_API_VERSION"),
+                "base_url": os.getenv("AZURE_BASE_URL"),
+                "model_name": os.getenv("AZURE_MODEL_NAME"),
+                "model_deployment": os.getenv("AZURE_MODEL_DEPLOYMENT"),
+                "embedding_deployment": os.getenv("AZURE_EMBEDDING_DEPLOYMENT"),
+                "embedding_name": os.getenv("AZURE_EMBEDDING_NAME")
+            },
+            "MongoDB": {
+                "url": os.getenv("MONGODB_URL"),
+                "dbName": os.getenv("MONGODB_DB_NAME"),
+                "collectionName": os.getenv("MONGODB_COLLECTION_NAME")
+            }
+        }
 
     def get_config(self):
         return self.config

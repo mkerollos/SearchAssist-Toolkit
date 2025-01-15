@@ -17,12 +17,15 @@ load_dotenv()
 def call_search_api(queries, ground_truths):
     config_manager = ConfigManager()
     config = config_manager.get_config()    
-    if config.get('SA'):
-        from rag_evaluator.api.SASearch import SearchAssistAPI, get_bot_response
-        api = SearchAssistAPI()
-    elif config.get('UXO'):
-        from rag_evaluator.api.XOSearch import XOSearchAPI, get_bot_response
-        api = XOSearchAPI()
+    match config.get('koreai').get('api_mode'):
+        case 'SA':
+            from rag_evaluator.api.SASearch import SearchAssistAPI, get_bot_response
+            api = SearchAssistAPI()
+        case 'UXO':
+            from rag_evaluator.api.XOSearch import XOSearchAPI, get_bot_response
+            api = XOSearchAPI()
+        case _:
+            raise Exception("Unknown api specified. Must be 'UXO' or 'SA'")
         
     results = []
     for query, truth in zip(queries, ground_truths):

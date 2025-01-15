@@ -11,11 +11,11 @@ def generate_JWT_token(client_id, client_secret):
 class XOSearchAPI:
     def __init__(self):
         config = ConfigManager().get_config()
-        self.client_id = config.get('UXO').get('client_id')
-        self.client_secret = config.get('UXO').get('client_secret')
+        self.client_id = config.get('koreai').get('client_id')
+        self.client_secret = config.get('koreai').get('client_secret')
         self.auth_token = generate_JWT_token(self.client_id, self.client_secret)
-        self.app_id = config.get('UXO').get('app_id')
-        self.domain = config.get('UXO').get('domain')
+        self.app_id = config.get('koreai').get('app_id')
+        self.domain = config.get('koreai').get('domain')
         self.base_url = f'https://{self.domain}/api/public/bot/{self.app_id}'
 
     def _make_request(self, endpoint: str, data: Dict) -> Optional[Dict]:
