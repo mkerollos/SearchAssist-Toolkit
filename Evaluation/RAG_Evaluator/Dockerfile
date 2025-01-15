@@ -8,11 +8,10 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 
 ENV POETRY_HOME=/opt/poetry
-RUN python3 -m venv $POETRY_HOME && \
-$POETRY_HOME/bin/pip install poetry==2.0.1 poetry-plugin-export && \
-$POETRY_HOME/bin/poetry --version
+RUN pip install poetry==2.0.1 poetry-plugin-export && \
+poetry --version
 
-RUN $POETRY_HOME/bin/poetry export -f requirements.txt --output requirements.txt
+RUN poetry export -f requirements.txt --output requirements.txt && pip uninstall poetry poetry-plugin-export -y
 
 # Install the dependencies
 RUN pip install -r requirements.txt
@@ -22,4 +21,4 @@ COPY . /app
 RUN pip install -e .
 
 # Set the entrypoint for the container
-# CMD ["python", "main.py"]
+ENTRYPOINT ["python", "rag_evaluator/main.py"]

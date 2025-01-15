@@ -95,7 +95,7 @@ To run an evaluation on a specific sheet using both Ragas and Crag evaluators an
 python rag_evaluator/main.py --input_file rag_evaluator/sample_input_file.xlsx --sheet_name "Sheet1" --use_search_api
 
 # Docker equivalent
-docker run -it --rm rag_evaluator python rag_evaluator/main.py --input_file rag_evaluator/sample_input_file.xlsx --sheet_name "Sheet1" --use_search_api
+docker run -it --rm rag_evaluator --input_file rag_evaluator/sample_input_file.xlsx --sheet_name "Sheet1" --use_search_api
 ```
 ### Example 2: Using only Ragas Evaluator and without Search AI API
 
