@@ -8,21 +8,20 @@ This repo is designed to evaluate queries and ground truths using the Ragas and 
 
 ### Prerequisites
 
-- Install new virtual environment(Recommended)
 - Python 3.9.x
-- Pip package manager
+- Poetry package manager
 
 ### Installing Packages
 
 1. Ensure you have Python and pip installed. You can check this by running:
  ```sh
  python --version
- pip --version
+ poetry --version
  ```
 
 2. Install the necessary packages by running:
  ```sh
- pip install -r requirements.txt
+poetry install
  ```
 
 ## Usage
@@ -106,10 +105,10 @@ $env:OPENAI_API_KEY="your_openai_api_key"
 $env:AZURE_OPENAI_API_KEY="your_openai_api_key"
 ```
 
-###Configuration
+### Configuration
 Ensure the configuration file `config.json` is correctly set up and accessible.
 
-####Setting Up config.json
+#### Setting Up config.json
 Create a config.json file in the config directory with the necessary configuration settings. Below is an example of how your config.json file might look:
 
 ```json5

@@ -4,8 +4,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from services.run_eval import runeval
-from services.mailService import mailService
+from rag_evaluator.services.run_eval import runeval
+from rag_evaluator.services.mailService import mailService
 
 app = FastAPI()
 

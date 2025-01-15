@@ -16,9 +16,9 @@ from ragas.llms import LangchainLLMWrapper
 from ragas.embeddings import LangchainEmbeddingsWrapper
 from langchain_openai import ChatOpenAI
 from langchain_openai import OpenAIEmbeddings
-from ragas import evaluate
+from ragas import evaluate, RunConfig
 from .baseEvaluator import BaseEvaluator
-from config.configManager import ConfigManager
+from rag_evaluator.config.configManager import ConfigManager
 
 
 class RagasEvaluator(BaseEvaluator):
@@ -56,7 +56,7 @@ class RagasEvaluator(BaseEvaluator):
             ContextRecall(llm=evaluator_llm),
             LLMContextPrecisionWithReference(llm=evaluator_llm, name="context_precision"),
             AnswerCorrectness(llm=evaluator_llm, embeddings=evaluator_embeddings),
-            SemanticSimilarity(llm=evaluator_llm, embeddings=evaluator_embeddings, name="answer_similarity")
+            SemanticSimilarity(embeddings=evaluator_embeddings, name="answer_similarity")
         ]
         ground_truths = [str(ground_truth).strip() for ground_truth in ground_truths]
         # Update the required columns names in the dataset
@@ -67,7 +67,8 @@ class RagasEvaluator(BaseEvaluator):
             'reference': ground_truths
         }
         dataset = Dataset.from_dict(data)
-        result = evaluate(dataset, metrics=metrics)
+        run_config = RunConfig(timeout=300)
+        result = evaluate(dataset, metrics=metrics, run_config=run_config)
         result_df = result.to_pandas()
         return result_df, result
 

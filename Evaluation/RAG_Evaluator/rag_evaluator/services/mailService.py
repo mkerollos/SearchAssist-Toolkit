@@ -1,6 +1,6 @@
 import pandas as pd
 from pymongo import MongoClient
-from config.configManager import ConfigManager
+from rag_evaluator.config.configManager import ConfigManager
 import os
 import numpy as np
 

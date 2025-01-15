@@ -4,20 +4,24 @@ import argparse
 import traceback
 from datetime import datetime
 from openai import OpenAI
-from config.configManager import ConfigManager
-from evaluators.ragasEvaluator import RagasEvaluator
-from evaluators.cragEvaluator import CragEvaluator
-from utils.evaluationResult import ResultsConverter
-from utils.dbservice import dbService
+from rag_evaluator.config.configManager import ConfigManager
+from rag_evaluator.evaluators.ragasEvaluator import RagasEvaluator
+from rag_evaluator.evaluators.cragEvaluator import CragEvaluator
+from rag_evaluator.utils.evaluationResult import ResultsConverter
+from rag_evaluator.utils.dbservice import dbService
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 def call_search_api(queries, ground_truths):
     config_manager = ConfigManager()
     config = config_manager.get_config()    
     if config.get('SA'):
-        from api.SASearch import SearchAssistAPI, get_bot_response
+        from rag_evaluator.api.SASearch import SearchAssistAPI, get_bot_response
         api = SearchAssistAPI()
     elif config.get('UXO'):
-        from api.XOSearch import XOSearchAPI, get_bot_response
+        from rag_evaluator.api.XOSearch import XOSearchAPI, get_bot_response
         api = XOSearchAPI()
         
     results = []
@@ -162,7 +166,7 @@ def run(input_file, sheet_name="", evaluate_ragas=False, evaluate_crag=False, us
                                                     run_ragas=run_ragas,
                                                     use_search_api=use_search_api, 
                                                     llm_model=llm_model)
-                results[0].to_excel(writer, sheet_name=sheet_name, index=False)
+                results.to_excel(writer, sheet_name=sheet_name, index=False)
                 if(save_db):
                     dbService(results[0], results[1], timestamp)
 
@@ -222,7 +226,8 @@ def main():
                                                        run_ragas=run_ragas,
                                                        use_search_api=args.use_search_api, 
                                                        llm_model=llm_model)
-                results[0].to_excel(writer, sheet_name=sheet_name, index=False)
+
+                results.to_excel(writer, sheet_name=sheet_name, index=False)
                 if(args.save_db):
                     dbService(results[0], results[1], timestamp)
 

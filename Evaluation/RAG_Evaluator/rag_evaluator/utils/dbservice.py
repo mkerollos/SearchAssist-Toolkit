@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 import numpy as np
-from config.configManager import ConfigManager
+from rag_evaluator.config.configManager import ConfigManager
 from datetime import datetime
 
 config_manager = ConfigManager()

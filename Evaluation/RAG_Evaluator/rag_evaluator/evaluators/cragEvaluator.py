@@ -7,14 +7,14 @@ import sys
 sys.path.append(str(os.getcwd()))
 from transformers import AutoTokenizer
 from loguru import logger
-from evaluators.baseEvaluator import BaseEvaluator
-from utils.fileHandling import log_response
-from utils.dataProcessing import trim_predictions_to_max_token_length
-from config.configManager import ConfigManager
-from utils.fileHandling import load_json_file
+from rag_evaluator.evaluators.baseEvaluator import BaseEvaluator
+from rag_evaluator.utils.fileHandling import log_response
+from rag_evaluator.utils.dataProcessing import trim_predictions_to_max_token_length
+from rag_evaluator.config.configManager import ConfigManager
+from rag_evaluator.utils.fileHandling import load_json_file
 
 # Give relative path of the file from src directory
-prompts_file_path = "./prompts/prompts.json"
+prompts_file_path = "./rag_evaluator/prompts/prompts.json"
 prompts = load_json_file(prompts_file_path)
 
 
