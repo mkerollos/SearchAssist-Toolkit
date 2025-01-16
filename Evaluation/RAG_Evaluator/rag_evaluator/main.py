@@ -16,6 +16,7 @@ from tqdm import tqdm
 load_dotenv()
 
 def process_single_api_call(api, query, truth, get_bot_response):
+    tqdm.write(f"Making SA search call for query: {query}")
     response = get_bot_response(api, query, truth)
     if not response:
         response =  {
@@ -41,22 +42,16 @@ def call_search_api(queries, ground_truths):
         
     results = []
 
-    with ThreadPool(processes=8) as pool:
-        results = list(tqdm(pool.imap(process_single_api_call, [(api, query, truth, get_bot_response) for query, truth in zip(queries, ground_truths)]), 
-                            total=len(queries),
-                            desc="Processing XO API Calls"))
-    for query, truth in zip(queries, ground_truths):
-        response = get_bot_response(api, query, truth)
-        if response:
-            results.append(response)
-        else:
-            results.append({
-                'query': query,
-                'ground_truth': truth,
-                'context': [],
-                'context_url': '',
-                'answer': "Failed to get response"
-            })
+    with ThreadPool(processes=config.get('koreai').get('api_workers')) as pool:
+        args_list = [(api, query, truth, get_bot_response) 
+                    for query, truth in zip(queries, ground_truths)]
+        
+        results = list(tqdm(
+            pool.imap(lambda x: process_single_api_call(*x), args_list),
+            total=len(queries),
+            desc="Processing XO API Calls"
+        ))
+
     return results
 
 

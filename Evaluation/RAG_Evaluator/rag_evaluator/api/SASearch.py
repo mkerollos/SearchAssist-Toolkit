@@ -1,11 +1,10 @@
 import requests
 from typing import Dict, List, Tuple, Optional
-from config.configManager import ConfigManager
-from utils.jti import JTI
+from rag_evaluator.config.configManager import ConfigManager
+from rag_evaluator.utils.jti import JTI
 
 
 def generate_JWT_token(client_id, client_secret):
-      
     jwt_token = JTI.get_hs_key(client_id, client_secret, "JWT", "HS256")
     
     return jwt_token
@@ -39,7 +38,6 @@ class SearchAssistAPI:
             "query": query,
             "includeChunksInResponse": True
         }
-        print("Making SA search call for query:", query)
         return self._make_request('advancedSearch', data)
 
 
