@@ -20,6 +20,7 @@ class ConfigManager:
         return {
             "koreai": {
                 "api_mode": os.getenv("KORE_API_MODE"),
+                "api_workers": os.getenv("KORE_API_WORKERS"),
                 "app_id": os.getenv("KORE_APP_ID"),
                 "client_id": os.getenv("KORE_CLIENT_ID"),
                 "client_secret": os.getenv("KORE_CLIENT_SECRET"),
@@ -41,6 +42,9 @@ class ConfigManager:
                 "url": os.getenv("MONGODB_URL"),
                 "dbName": os.getenv("MONGODB_DB_NAME"),
                 "collectionName": os.getenv("MONGODB_COLLECTION_NAME")
+            },
+            "RAGAS": {
+                "api_workers": os.getenv("RAGAS_API_WORKERS"),
             }
         }
 

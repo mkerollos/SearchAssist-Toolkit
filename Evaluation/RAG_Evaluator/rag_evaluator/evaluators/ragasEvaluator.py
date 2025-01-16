@@ -67,7 +67,8 @@ class RagasEvaluator(BaseEvaluator):
             'reference': ground_truths
         }
         dataset = Dataset.from_dict(data)
-        run_config = RunConfig(timeout=300)
+        config = ConfigManager().get_config()
+        run_config = RunConfig(timeout=300, max_workers=config.get('RAGAS').get'api_workers'))
         result = evaluate(dataset, metrics=metrics, run_config=run_config)
         result_df = result.to_pandas()
         return result_df, result

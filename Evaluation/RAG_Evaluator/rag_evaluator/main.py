@@ -10,13 +10,25 @@ from rag_evaluator.evaluators.cragEvaluator import CragEvaluator
 from rag_evaluator.utils.evaluationResult import ResultsConverter
 from rag_evaluator.utils.dbservice import dbService
 from dotenv import load_dotenv
+from multiprocessing.pool import ThreadPool
+from tqdm import tqdm
 
 load_dotenv()
 
+def process_single_api_call(api, query, truth, get_bot_response):
+    response = get_bot_response(api, query, truth)
+    if not response:
+        response =  {
+            'query': query,
+            'ground_truth': truth,
+            'context': [],
+            'context_url': '',
+            'answer': "Failed to get response"
+        }
+    return response
 
 def call_search_api(queries, ground_truths):
-    config_manager = ConfigManager()
-    config = config_manager.get_config()    
+    config = ConfigManager().get_config()    
     match config.get('koreai').get('api_mode'):
         case 'SA':
             from rag_evaluator.api.SASearch import SearchAssistAPI, get_bot_response
@@ -28,6 +40,11 @@ def call_search_api(queries, ground_truths):
             raise Exception("Unknown api specified. Must be 'UXO' or 'SA'")
         
     results = []
+
+    with ThreadPool(processes=8) as pool:
+        results = list(tqdm(pool.imap(process_single_api_call, [(api, query, truth, get_bot_response) for query, truth in zip(queries, ground_truths)]), 
+                            total=len(queries),
+                            desc="Processing XO API Calls"))
     for query, truth in zip(queries, ground_truths):
         response = get_bot_response(api, query, truth)
         if response:
@@ -131,8 +148,7 @@ def evaluate_with_ragas_and_crag(excel_file, sheet_name, config, run_ragas=True,
 # for running from api
 def run(input_file, sheet_name="", evaluate_ragas=False, evaluate_crag=False, use_search_api=False, llm_model=None, save_db=False):
     try:
-        config_manager = ConfigManager()
-        config = config_manager.get_config()
+        config = ConfigManager().get_config()
 
         run_ragas = evaluate_ragas
         run_crag = evaluate_crag
@@ -193,8 +209,7 @@ def main():
         parser.add_argument('--save_db', action='store_true', help='Save the results to MongoDB.')
         args = parser.parse_args()
 
-        config_manager = ConfigManager()
-        config = config_manager.get_config()
+        config = ConfigManager().get_config()
 
         # If no specific sheet is provided, get all sheet names
         if args.sheet_name:
