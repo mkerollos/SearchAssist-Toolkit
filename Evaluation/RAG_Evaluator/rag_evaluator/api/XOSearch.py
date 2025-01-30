@@ -35,22 +35,48 @@ class XOSearchAPI:
     def advanced_search(self, query: str) -> Optional[Dict]:
         data = {
             "query": query,
-            "includeChunksInResponse": True
+            "includeChunksInResponse": True,
+            "includeMetaDataAnswers": ["chunkMeta.recordTitle"]
         }
         return self._make_request('advancedSearch', data)
+
+    def get_chunks(self) -> Optional[Dict]:
+        data ={
+        }
+        hasMore = True
+        chunks =  []
+        try:
+            while hasMore:
+                response = self._make_request('chunk/list', data)
+                hasMore = response.get("hasMore", False)
+                print(f"hasMore = {hasMore}")
+                if hasMore:
+                    nextCursor = response.get("nextCursor")
+                    print(f"nextCursor = {nextCursor}")
+                    data = {
+                        "nextCursor": response.get("nextCursor")
+                    }
+                    for chunk in response.get("chunks"):
+                        chunks.append({
+                            "recordTitle": chunk.get("recordTitle"),
+                            "chunkText": chunk.get("chunkText")
+                        })
+        except Exception as e:
+            print(e)
+        return chunks
 
 
 class AnswerProcessor:
     @staticmethod
     def get_context(answer: Dict) -> Tuple[List[str], str]:
         contexts = []
-        context_urls = set()
+        context_titles = set()
         for chunk in answer.get('chunk_result', {}).get('generative', []):
             source = chunk.get('_source', {})
             if source.get('sentToLLM'):
                 contexts.append(source.get('chunkText', ''))
-                context_urls.add(source.get('recordUrl', ''))
-        return contexts, ",".join(context_urls)
+                context_titles.add(source.get('recordTitle', ''))
+        return contexts, list(context_titles)
 
     @staticmethod
     def extract_answer(answer: Dict) -> str:
@@ -64,19 +90,18 @@ class AnswerProcessor:
         return answer_string
 
 
-def get_bot_response(api: XOSearchAPI, query: str, truth: str) -> Optional[Dict]:
+def get_bot_response(api: XOSearchAPI, query: str) -> Optional[Dict]:
     answer = api.advanced_search(query)
     if not answer:
         return None
 
-    context_data, context_url = AnswerProcessor.get_context(answer)
+    context_data, context_title = AnswerProcessor.get_context(answer)
     bot_answer = AnswerProcessor.extract_answer(answer)
 
     return {
         'query': query,
-        'ground_truth': truth,
         'context': context_data,
-        'context_url': context_url,
+        'context_title': context_title,
         'answer': bot_answer
     }
 

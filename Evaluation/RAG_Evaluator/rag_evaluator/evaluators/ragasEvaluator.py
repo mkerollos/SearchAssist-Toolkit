@@ -16,7 +16,7 @@ from ragas.llms import LangchainLLMWrapper
 from ragas.embeddings import LangchainEmbeddingsWrapper
 from langchain_openai import ChatOpenAI
 from langchain_openai import OpenAIEmbeddings
-from ragas import evaluate, RunConfig
+from ragas import evaluate, RunConfig, SingleTurnSample, EvaluationDataset
 from .baseEvaluator import BaseEvaluator
 from rag_evaluator.config.configManager import ConfigManager
 
@@ -66,7 +66,16 @@ class RagasEvaluator(BaseEvaluator):
             'retrieved_contexts': contexts,
             'reference': ground_truths
         }
-        dataset = Dataset.from_dict(data)
+        single_turn_samples = []
+        for query, answer, context, ground_truth in zip(queries, answers, contexts, ground_truths):
+            sample = SingleTurnSample(
+                user_input=query,
+                retrieved_contexts=context,
+                reference=ground_truth,
+                response=answer
+            )
+            single_turn_samples.append(sample)
+        dataset = EvaluationDataset(samples=single_turn_samples)
         config = ConfigManager().get_config()
         run_config = RunConfig(timeout=300, max_workers=config.get('RAGAS').get('api_workers'))
         result = evaluate(dataset, metrics=metrics, run_config=run_config)
